@@ -14,12 +14,10 @@
 # ./odoo-install
 ################################################################################
 
-OE_USER="odoo13"
+OE_USER="odoo"
 OE_HOME="/$OE_USER"
 OE_HOME_EXT="/$OE_USER/${OE_USER}-server"
 # The default port where this Odoo instance will run under (provided you use the command -c in the terminal)
-# Set to true if you want to install it, false if you don't need it or have it already installed.
-INSTALL_WKHTMLTOPDF="True"
 # Set the default Odoo port (you still have to use -c /etc/odoo-server.conf for example to use this.)
 OE_PORT="8069"
 # Choose the Odoo version which you want to install. For example: 13.0, 12.0, 11.0 or saas-18. When using 'master' the master version will be installed.
@@ -35,7 +33,7 @@ OE_SUPERADMIN="admin"
 GENERATE_RANDOM_PASSWORD="True"
 OE_CONFIG="${OE_USER}-server"
 # Set the website name
-WEBSITE_NAME="_"
+WEBSITE_NAME="example.com"
 # Set the default Odoo longpolling port (you still have to use -c /etc/odoo-server.conf for example to use this.)
 LONGPOLLING_PORT="8072"
 # Set to "True" to install certbot and have ssl enabled, "False" to use http
@@ -43,27 +41,20 @@ ENABLE_SSL="True"
 # Provide Email to register ssl certificate
 ADMIN_EMAIL="odoo@example.com"
 ##
-###  WKHTMLTOPDF download links
-## === Ubuntu Trusty x64 & x32 === (for other distributions please replace these two links,
-## in order to have correct version of wkhtmltopdf installed, for a danger note refer to
-## https://github.com/odoo/odoo/wiki/Wkhtmltopdf ):
-## https://www.odoo.com/documentation/13.0/setup/install.html#debian-ubuntu
-
-WKHTMLTOX_X64=https://github.com/wkhtmltopdf/wkhtmltopdf/releases/download/0.12.5/wkhtmltox_0.12.5-1.bionic_amd64.deb
-WKHTMLTOX_X32=https://github.com/wkhtmltopdf/wkhtmltopdf/releases/download/0.12.5/wkhtmltox_0.12.5-1.bionic_i386.deb
 
 #--------------------------------------------------
 # Update Server
 #--------------------------------------------------
 echo -e "\n---- Update Server ----"
-sudo apt-get update
-sudo apt-get upgrade -y
+sudo apt update
+sudo apt upgrade -y
 
 #--------------------------------------------------
 # Install PostgreSQL Server
 #--------------------------------------------------
 echo -e "\n---- Install PostgreSQL Server ----"
 sudo apt-get install postgresql -y
+sudo systemctl enable postgresql
 
 echo -e "\n---- Creating the ODOO PostgreSQL User  ----"
 sudo su - postgres -c "createuser -s $OE_USER" 2> /dev/null || true
@@ -84,21 +75,14 @@ sudo npm install -g rtlcss
 #--------------------------------------------------
 # Install Wkhtmltopdf if needed
 #--------------------------------------------------
-if [ $INSTALL_WKHTMLTOPDF = "True" ]; then
-  echo -e "\n---- Install wkhtml and place shortcuts on correct place for ODOO 13 ----"
-  #pick up correct one from x64 & x32 versions:
-  if [ "`getconf LONG_BIT`" == "64" ];then
-      _url=$WKHTMLTOX_X64
-  else
-      _url=$WKHTMLTOX_X32
-  fi
-  sudo wget $_url
-  sudo gdebi --n `basename $_url`
-  sudo ln -s /usr/local/bin/wkhtmltopdf /usr/bin
-  sudo ln -s /usr/local/bin/wkhtmltoimage /usr/bin
-else
-  echo "Wkhtmltopdf isn't installed due to the choice of the user!"
-fi
+###  WKHTMLTOPDF download links
+## === Ubuntu Bionic x64  === (for other distributions please replace these two links,
+## in order to have correct version of wkhtmltopdf installed, for a danger note refer to
+## https://github.com/odoo/odoo/wiki/Wkhtmltopdf ):
+## https://www.odoo.com/documentation/13.0/setup/install.html#debian-ubuntu
+
+wget https://github.com/wkhtmltopdf/wkhtmltopdf/releases/download/0.12.5/wkhtmltox_0.12.5-1.bionic_amd64.deb
+sudo apt install wkhtmltox_0.12.5-1.bionic_amd64.deb
 
 echo -e "\n---- Create ODOO system user ----"
 sudo adduser --system --quiet --shell=/bin/bash --home=$OE_HOME --gecos 'ODOO' --group $OE_USER
@@ -263,6 +247,8 @@ sudo update-rc.d $OE_CONFIG defaults
 if [ $INSTALL_NGINX = "True" ]; then
   echo -e "\n---- Installing and setting up Nginx ----"
   sudo apt install nginx -y
+  sudo systemctl enable nginx
+  
   cat <<EOF > ~/odoo
   server {
   listen 80;
@@ -339,7 +325,7 @@ EOF
   sudo mv ~/odoo /etc/nginx/sites-available/
   sudo ln -s /etc/nginx/sites-available/odoo /etc/nginx/sites-enabled/odoo
   sudo rm /etc/nginx/sites-enabled/default
-  sudo service nginx reload
+  sudo systemctl reload nginx
   sudo su root -c "printf 'proxy_mode = True\n' >> /etc/${OE_CONFIG}.conf"
   echo "Done! The Nginx server is up and running. Configuration can be found at /etc/nginx/sites-available/odoo"
 else
@@ -351,10 +337,12 @@ fi
 #--------------------------------------------------
 
 if [ $INSTALL_NGINX = "True" ] && [ $ENABLE_SSL = "True" ] && [ $ADMIN_EMAIL != "odoo@example.com" ]  && [ $WEBSITE_NAME != "_" ];then
+  sudo apt-get install software-properties-common
+  sudo add-apt-repository universe
   sudo add-apt-repository ppa:certbot/certbot -y && sudo apt-get update -y
   sudo apt-get install python-certbot-nginx -y
   sudo certbot --nginx -d $WEBSITE_NAME --noninteractive --agree-tos --email $ADMIN_EMAIL --redirect
-  sudo service nginx reload
+  sudo systemctl reload nginx
   echo "SSL/HTTPS is enabled!"
 else
   echo "SSL/HTTPS isn't enabled due to choice of the user or because of a misconfiguration!"
