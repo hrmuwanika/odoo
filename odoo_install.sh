@@ -281,10 +281,10 @@ if [ $INSTALL_NGINX = "True" ]; then
   proxy_buffers   16  64k;
   proxy_buffer_size   128k;
 
-  proxy_connect_timeout   3600;
-  proxy_read_timeout      3600;
-  proxy_send_timeout      3600;
-  send_timeout            3600;
+  proxy_connect_timeout   720;
+  proxy_read_timeout      720;
+  proxy_send_timeout      720;
+  send_timeout            720;
 
   #   force   timeouts    if  the backend dies
   proxy_next_upstream error   timeout invalid_header  http_500    http_502
