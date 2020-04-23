@@ -1,4 +1,4 @@
-# [Odoo](https://www.odoo.com "Odoo's Homepage") Installation Script for Odoo Open Source
+# [Odoo] Installation Script for Odoo Open Source
 
 This script is based on the install script from André Schenkels (https://github.com/aschenkels-ictstudio/openerp-install-scripts)
 but goes a bit further and has been improved. This script will also give you the ability to define an xmlrpc_port in the .conf file that is generated under /etc/
