@@ -20,7 +20,7 @@ There are a few things you can configure, this is the most used list:<br/>
 ```OE_VERSION``` is the Odoo version to install, for example ```13.0``` for Odoo V13.<br/>
 ```IS_ENTERPRISE``` will install the Enterprise version on top of ```13.0``` if you set it to ```True```, set it to ```False``` if you want the community version of Odoo 13.<br/>
 ```OE_SUPERADMIN``` is the master password for this Odoo installation.<br/>
-```INSTALL_NGINX``` is set to ```False``` by default. Set this to ```True``` if you want to install Nginx.<br/>
+```INSTALL_NGINX``` is set to ```True``` by default. Set this to ```False``` if you don't want to install Nginx.<br/>
 ```WEBSITE_NAME``` Set the website name here for nginx configuration<br/>
 ```ENABLE_SSL``` Set this to ```True``` to install [certbot](https://certbot.eff.org/lets-encrypt/ubuntubionic-nginx.html) and configure nginx with https using a free Let's Encrypted certificate<br/>
 ```ADMIN_EMAIL``` Email is needed to register for Let's Encrypt registration. Replace the default placeholder with an email of your organisation.<br/>
@@ -35,3 +35,8 @@ sudo chmod +x odoo_install.sh
 ```
 sudo ./odoo_install.sh
 ```
+
+The installation should take about 10 minutes to complete and then you will be able to access it from
+anywhere in the world by entering its ipaddress.
+
+For more information on hosting, upgrading to odoo enterprise, and changing your domain, contact me hrmuwanika@gmail.com
