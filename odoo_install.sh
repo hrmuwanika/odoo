@@ -298,7 +298,7 @@ if [ $INSTALL_NGINX = "True" ] && [ $ENABLE_SSL = "True" ] && [ $ADMIN_EMAIL != 
   sudo apt-get install python-certbot-nginx -y
   sudo certbot --nginx -d $WEBSITE_NAME --noninteractive --agree-tos --email $ADMIN_EMAIL --redirect
   sudo systemctl reload nginx
-  echo "SSL/HTTPS is enabled!"
+  echo "\n============ SSL/HTTPS is enabled! ========================"
 else
   echo "\n==== SSL/HTTPS isn't enabled due to choice of the user or because of a misconfiguration! ======"
 fi
@@ -317,6 +317,6 @@ echo "Start Odoo service: sudo service $OE_CONFIG start"
 echo "Stop Odoo service: sudo service $OE_CONFIG stop"
 echo "Restart Odoo service: sudo service $OE_CONFIG restart"
 if [ $INSTALL_NGINX = "True" ]; then
-  echo "\n=== Nginx configuration file: /etc/nginx/sites-available/odoo ============="
+  echo "Nginx configuration file: /etc/nginx/sites-available/odoo"
 fi
 echo -e "\n========================================================================="
