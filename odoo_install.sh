@@ -46,9 +46,9 @@ ADMIN_EMAIL="odoo@example.com"
 # Update Server
 #--------------------------------------------------
 echo -e "\n---- Update Server ----"
-sudo apt-get update
-sudo apt-get upgrade -y
-sudo apt-get autoremove -y
+sudo apt update
+sudo apt upgrade -y
+sudo apt autoremove -y
 
 #--------------------------------------------------
 # Install PostgreSQL Server
@@ -56,8 +56,8 @@ sudo apt-get autoremove -y
 echo -e "\n---- Install PostgreSQL Server ----"
 wget -q https://www.postgresql.org/media/keys/ACCC4CF8.asc -O- | sudo apt-key add -
 sudo echo "deb http://apt.postgresql.org/pub/repos/apt/ bionic-pgdg main" | sudo tee /etc/apt/sources.list.d/postgresql.list
-sudo apt-get update
-sudo apt-get install postgresql-10 -y
+sudo apt update
+sudo apt install postgresql-10 -y
 sudo systemctl enable postgresql
 
 echo -e "\n---- Creating the ODOO PostgreSQL User  ----"
@@ -67,7 +67,7 @@ sudo su - postgres -c "createuser -s $OE_USER" 2> /dev/null || true
 # Install Dependencies
 #--------------------------------------------------
 echo -e "\n--- Installing Python 3 + pip3 --"
-sudo apt install git build-essential python3-pip python3-dev python3-venv python3-wheel python3-setuptools libpq-dev libldap2-dev libsasl2-dev libxslt1-dev node-less -y
+sudo apt install git build-essential python3-pip python3-dev python3-venv python3-wheel python3-setuptools libpq-dev libxslt-dev libzip-dev libldap2-dev libsasl2-dev libxslt1-dev node-less -y
 sudo -H pip3 install --upgrade pip
 sudo apt install software-properties-common -y
 
@@ -75,7 +75,7 @@ echo -e "\n---- Install python packages/requirements ----"
 sudo pip3 install -r https://github.com/odoo/odoo/raw/${OE_VERSION}/requirements.txt
 
 echo -e "\n---- Installing nodeJS NPM and rtlcss for LTR support ----"
-sudo apt-get install nodejs npm -y
+sudo apt install nodejs npm -y
 sudo npm install -g rtlcss
 
 #--------------------------------------------------
