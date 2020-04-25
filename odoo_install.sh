@@ -168,7 +168,7 @@ sudo chmod 640 /etc/${OE_CONFIG}.conf
 #--------------------------------------------------
 
 echo -e "\n========== Create Odoo systemd file ==============="
-cat <<EOF > /etc/systemd/system/odoo-server.service
+cat <<EOF > /lib/systemd/system/odoo.service
 
 [Unit]
 Description=Odoo Open Source ERP and CRM
@@ -178,7 +178,7 @@ After=network.target postgresql.service
 [Service]
 Type=simple
 PermissionsStartOnly=true
-SyslogIdentifier=odoo-server
+SyslogIdentifier=odoo
 User=$OE_USER
 Group=$OE_USER
 ExecStart=$OE_HOME_EXT/odoo-bin --config /etc/${OE_CONFIG}.conf  --logfile /var/log/${OE_USER}/${OE_CONFIG}.log
@@ -191,8 +191,8 @@ EOF
 
 echo -e "\n======== Odoo startup File ============="
 sudo systemctl daemon-reload
-sudo systemctl enable odoo-server.service
-sudo systemctl start odoo-server.service
+sudo systemctl enable odoo.service
+sudo systemctl start odoo.service
 
 #--------------------------------------------------
 # Install Nginx if needed
