@@ -2,7 +2,6 @@
 ################################################################################
 # Script for installing Odoo on Debian 10.0 (could be used for other version too)
 # Authors: Henry Robert Muwanika
-# Maintainers: Yenthe Van Ginneken, César Cordero Rodríguez
 #-------------------------------------------------------------------------------
 # This script will install Odoo on your Debian 10.0 server. It can install multiple Odoo instances
 # in one Debian because of the different xmlrpc_ports
@@ -25,7 +24,7 @@ OE_PORT="8069"
 # IMPORTANT! This script contains extra libraries that are specifically needed for Odoo 13.0
 OE_VERSION="13.0"
 # Set this to True if you want to install the Odoo enterprise version!
-IS_ENTERPRISE="Truee"
+IS_ENTERPRISE="False"
 # Set this to True if you want to install Nginx!
 INSTALL_NGINX="True"
 # Set the superadmin password - if GENERATE_RANDOM_PASSWORD is set to "True" we will automatically generate a random password, otherwise we use this one
@@ -34,38 +33,49 @@ OE_SUPERADMIN="admin"
 GENERATE_RANDOM_PASSWORD="True"
 OE_CONFIG="${OE_USER}-server"
 # Set the website name
-WEBSITE_NAME="_"
+WEBSITE_NAME="example.com"
 # Set the default Odoo longpolling port (you still have to use -c /etc/odoo-server.conf for example to use this.)
 LONGPOLLING_PORT="8072"
+# Set to "True" to install certbot and have ssl enabled, "False" to use http
+ENABLE_SSL="True"
+# Provide Email to register ssl certificate
+ADMIN_EMAIL="odoo@example.com"
+##
 
 #--------------------------------------------------
 # Update Server
 #--------------------------------------------------
-echo -e "\n---- Update Server ----"
-sudo apt-get update
-sudo apt-get upgrade -y
+echo -e "\n============= Update Server ================"
+sudo apt update
+sudo apt upgrade -y
+sudo apt autoremove -y
 
 #--------------------------------------------------
 # Install PostgreSQL Server
 #--------------------------------------------------
-echo -e "\n---- Install PostgreSQL Server ----"
-sudo apt-get install postgresql -y
+echo -e "\n================ Install PostgreSQL Server =========================="
+wget -q https://www.postgresql.org/media/keys/ACCC4CF8.asc -O- | sudo apt-key add -
+sudo echo "deb http://apt.postgresql.org/pub/repos/apt/ buster-pgdg main" | sudo tee /etc/apt/sources.list.d/postgresql.list
+sudo apt update
+sudo apt install postgresql-10 -y
+sudo systemctl enable postgresql
 
-echo -e "\n---- Creating the ODOO PostgreSQL User  ----"
+echo -e "\n=========== Creating the ODOO PostgreSQL User ================="
 sudo su - postgres -c "createuser -s $OE_USER" 2> /dev/null || true
 
 #--------------------------------------------------
 # Install Dependencies
 #--------------------------------------------------
-echo -e "\n--- Installing Python 3 + pip3 --"
-sudo apt-get install git python3 python3-pip build-essential wget python3-dev python3-venv python3-wheel libxslt1-dev -y
-sudo apt-get install libzip-dev libldap2-dev libsasl2-dev python3-setuptools node-less gdebi -y
+echo -e "\n======= Installing Python 3 + pip3 ===================="
+sudo apt install git build-essential python3-pip python3-dev python3-venv python3-wheel python3-setuptools libpq-dev libxslt-dev libzip-dev libldap2-dev libsasl2-dev libxslt1-dev node-less -y
+sudo -H pip3 install --upgrade pip
+sudo apt install software-properties-common -y
 
-echo -e "\n---- Install python packages/requirements ----"
+echo -e "\n======== Install python packages/requirements ============"
 sudo pip3 install -r https://github.com/odoo/odoo/raw/${OE_VERSION}/requirements.txt
 
-echo -e "\n---- Installing nodeJS NPM and rtlcss for LTR support ----"
-sudo apt-get install nodejs npm -y
+echo -e "\n======== Installing nodeJS NPM and rtlcss for LTR support ==========="
+sudo apt install nodejs npm -y
 sudo npm install -g rtlcss
 
 #--------------------------------------------------
@@ -81,7 +91,7 @@ wget https://github.com/wkhtmltopdf/wkhtmltopdf/releases/download/0.12.5/wkhtmlt
 sudo dpkg -i wkhtmltox_0.12.5-1.buster_amd64.deb
 sudo apt -f install -y
 
-echo -e "\n---- Create ODOO system user ----"
+echo -e "\n======== Create ODOO system user =========="
 sudo adduser --system --quiet --shell=/bin/bash --home=$OE_HOME --gecos 'ODOO' --group $OE_USER
 #The user should also be added to the sudo'ers group.
 sudo adduser $OE_USER sudo
@@ -164,79 +174,30 @@ sudo chmod 755 $OE_HOME_EXT/start.sh
 #--------------------------------------------------
 
 echo -e "* Create init file"
-cat <<EOF > ~/$OE_CONFIG
-#!/bin/sh
-### BEGIN INIT INFO
-# Provides: $OE_CONFIG
-# Required-Start: \$remote_fs \$syslog
-# Required-Stop: \$remote_fs \$syslog
-# Should-Start: \$network
-# Should-Stop: \$network
-# Default-Start: 2 3 4 5
-# Default-Stop: 0 1 6
-# Short-Description: Enterprise Business Applications
-# Description: ODOO Business Applications
-### END INIT INFO
-PATH=/bin:/sbin:/usr/bin
-DAEMON=$OE_HOME_EXT/odoo-bin
-NAME=$OE_CONFIG
-DESC=$OE_CONFIG
-# Specify the user name (Default: odoo).
-USER=$OE_USER
-# Specify an alternate config file (Default: /etc/openerp-server.conf).
-CONFIGFILE="/etc/${OE_CONFIG}.conf"
-# pidfile
-PIDFILE=/var/run/\${NAME}.pid
-# Additional options that are passed to the Daemon.
-DAEMON_OPTS="-c \$CONFIGFILE"
-[ -x \$DAEMON ] || exit 0
-[ -f \$CONFIGFILE ] || exit 0
-checkpid() {
-[ -f \$PIDFILE ] || return 1
-pid=\`cat \$PIDFILE\`
-[ -d /proc/\$pid ] && return 0
-return 1
-}
-case "\${1}" in
-start)
-echo -n "Starting \${DESC}: "
-start-stop-daemon --start --quiet --pidfile \$PIDFILE \
---chuid \$USER --background --make-pidfile \
---exec \$DAEMON -- \$DAEMON_OPTS
-echo "\${NAME}."
-;;
-stop)
-echo -n "Stopping \${DESC}: "
-start-stop-daemon --stop --quiet --pidfile \$PIDFILE \
---oknodo
-echo "\${NAME}."
-;;
-restart|force-reload)
-echo -n "Restarting \${DESC}: "
-start-stop-daemon --stop --quiet --pidfile \$PIDFILE \
---oknodo
-sleep 1
-start-stop-daemon --start --quiet --pidfile \$PIDFILE \
---chuid \$USER --background --make-pidfile \
---exec \$DAEMON -- \$DAEMON_OPTS
-echo "\${NAME}."
-;;
-*)
-N=/etc/init.d/\$NAME
-echo "Usage: \$NAME {start|stop|restart|force-reload}" >&2
-exit 1
-;;
-esac
-exit 0
+cat <<EOF > /lib/systemd/system/odoo.service
+[Unit]
+Description=Odoo Open Source ERP and CRM
+Requires=postgresql.service
+After=network.target postgresql.service
+
+[Service]
+Type=simple
+PermissionsStartOnly=true
+SyslogIdentifier=odoo
+User=$OE_USER
+Group=$OE_USER
+ExecStart=$OE_HOME_EXT/odoo-bin --config /etc/${OE_CONFIG}.conf  --logfile /var/log/${OE_USER}/${OE_CONFIG}.log
+WorkingDirectory=$OE_HOME_EXT
+StandardOutput=journal+console
+
+[Install]
+WantedBy=multi-user.target
 EOF
 
-echo -e "* Security Init File"
-sudo mv ~/$OE_CONFIG /etc/init.d/$OE_CONFIG
-sudo chmod 755 /etc/init.d/$OE_CONFIG
-sudo chown root: /etc/init.d/$OE_CONFIG
-
-echo -e "* Start ODOO on Startup"
-sudo update-rc.d $OE_CONFIG defaults
+echo -e "========= Odoo startup File ===================="
+sudo systemctl daemon-reload
+sudo systemctl enable odoo.service
+sudo systemctl start odoo.service
 
 #--------------------------------------------------
 # Install Nginx if needed
@@ -245,90 +206,97 @@ if [ $INSTALL_NGINX = "True" ]; then
   echo -e "\n---- Installing and setting up Nginx ----"
   sudo apt install nginx -y
   cat <<EOF > ~/odoo
-  server {
-  listen 80;
+  #odoo server
+upstream odoo {
+    server 127.0.0.1:$OE_PORT weight=1 fail_timeout=0;
+}
 
-  # set proper server name after domain set
-  server_name $WEBSITE_NAME;
+upstream odoochat {
+    server 127.0.0.1:$LONGPOLLING_PORT weight=1 fail_timeout=0;
+}
 
-  # Add Headers for odoo proxy mode
-  proxy_set_header X-Forwarded-Host \$host;
-  proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
-  proxy_set_header X-Forwarded-Proto \$scheme;
-  proxy_set_header X-Real-IP \$remote_addr;
-  add_header X-Frame-Options "SAMEORIGIN";
-  add_header X-XSS-Protection "1; mode=block";
-  proxy_set_header X-Client-IP \$remote_addr;
-  proxy_set_header HTTP_X_FORWARDED_HOST \$remote_addr;
+# http -> https
+server {
+   listen 80;
+   listen [::]:80;
+   
+   #listen 443;
+   #listen [::]:443 ipv6only=on;
+   server_name $WEBSITE_NAME;
+   proxy_read_timeout 720s;
+   proxy_connect_timeout 720s;
+   proxy_send_timeout 720s;
 
-  #   odoo    log files
-  access_log  /var/log/nginx/$OE_USER-access.log;
-  error_log       /var/log/nginx/$OE_USER-error.log;
+   # Add Headers for odoo proxy mode
+   proxy_set_header X-Forwarded-Host \$host;
+   proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
+   proxy_set_header X-Forwarded-Proto \$scheme;
+   proxy_set_header X-Real-IP \$remote_addr;
 
-  #   increase    proxy   buffer  size
-  proxy_buffers   16  64k;
-  proxy_buffer_size   128k;
+   # SSL parameters
+   # ssl on;
+   # ssl_certificate /etc/letsencrypt/live/$WEBSITE_NAME/fullchain.pem;
+   # ssl_certificate_key /etc/letsencrypt/live/$WEBSITE_NAME/privkey.pem;
+   # ssl_session_timeout 30m;
+   # ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
+   # ssl_ciphers 'ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-AES256-GCM-SHA384:DHE-RSA-AES128-GCM-SHA256:DHE-DSS-AES128-GCM-SHA256:kEDH+AESGCM:ECDHE-RSA-AES128-SHA256:ECDHE-ECDSA-AES128-SHA256:ECDHE-RSA-AES128-SHA:ECDHE-ECDSA-AES128-SHA:ECDHE-RSA-AES256-SHA384:ECDHE-ECDSA-AES256-SHA384:ECDHE-RSA-AES256-SHA:ECDHE-ECDSA-AES256-SHA:DHE-RSA-AES128-SHA256:DHE-RSA-AES128-SHA:DHE-DSS-AES128-SHA256:DHE-RSA-AES256-SHA256:DHE-DSS-AES256-SHA:DHE-RSA-AES256-SHA:AES128-GCM-SHA256:AES256-GCM-SHA384:AES128-SHA256:AES256-SHA256:AES128-SHA:AES256-SHA:AES:CAMELLIA:DES-CBC3-SHA:!aNULL:!eNULL:!EXPORT:!DES:!RC4:!MD5:!PSK:!aECDH:!EDH-DSS-DES-CBC3-SHA:!EDH-RSA-DES-CBC3-SHA:!KRB5-DES-CBC3-SHA';
+   # ssl_prefer_server_ciphers on;
 
-  proxy_read_timeout 900s;
-  proxy_connect_timeout 900s;
-  proxy_send_timeout 900s;
+   # log
+   access_log /var/log/nginx/$OE_USER-access.log;
+   error_log /var/log/nginx/$OE_USER-error.log;
 
-  #   force   timeouts    if  the backend dies
-  proxy_next_upstream error   timeout invalid_header  http_500    http_502
-  http_503;
+   # Redirect requests to odoo backend server
+   location / {
+   proxy_redirect off;
+   proxy_pass http://odoo;
+   }
 
-  types {
-  text/less less;
-  text/scss scss;
-  }
+   location /longpolling {
+   proxy_pass http://odoochat;
+   }
 
-  #   enable  data    compression
-  gzip    on;
-  gzip_min_length 1100;
-  gzip_buffers    4   32k;
-  gzip_types  text/css text/less text/plain text/xml application/xml application/json application/javascript application/pdf image/jpeg image/png;
-  gzip_vary   on;
-  client_header_buffer_size 4k;
-  large_client_header_buffers 4 64k;
-  client_max_body_size 0;
+   # cache some static data in memory for 60mins.
+   # under heavy load this should relieve stress on the OpenERP web interface a bit.
+   location ~* /[0-9a-zA-Z_]*/static/ {
+                proxy_cache_valid 200 60m;
+                proxy_buffering on;
+                expires 864000;
+                proxy_pass http://odoo;
+   }
 
-  location / {
-  proxy_pass    http://127.0.0.1:$OE_PORT;
-  # by default, do not forward anything
-  proxy_redirect off;
-  }
-
-  location /longpolling {
-  proxy_pass http://127.0.0.1:$LONGPOLLING_PORT;
-  }
-  location ~* .(js|css|png|jpg|jpeg|gif|ico)$ {
-  expires 2d;
-  proxy_pass http://127.0.0.1:$OE_PORT;
-  add_header Cache-Control "public, no-transform";
-  }
-  # cache some static data in memory for 60mins.
-  location ~ /[a-zA-Z0-9_-]*/static/ {
-  proxy_cache_valid 200 302 60m;
-  proxy_cache_valid 404      1m;
-  proxy_buffering    on;
-  expires 864000;
-  proxy_pass    http://127.0.0.1:$OE_PORT;
-  }
-  }
+   # common gzip
+   gzip_types text/css text/scss text/plain text/xml application/xml application/json application/javascript;
+   gzip on;
+}
 EOF
 
   sudo mv ~/odoo /etc/nginx/sites-available/
   sudo ln -s /etc/nginx/sites-available/odoo /etc/nginx/sites-enabled/odoo
   sudo rm /etc/nginx/sites-enabled/default
-  sudo service nginx reload
+  sudo systemctl reload nginx
   sudo su root -c "printf 'proxy_mode = True\n' >> /etc/${OE_CONFIG}.conf"
   echo "Done! The Nginx server is up and running. Configuration can be found at /etc/nginx/sites-available/odoo"
 else
   echo "Nginx isn't installed due to choice of the user!"
 fi
+
+#--------------------------------------------------
+# Enable ssl with certbot
+#--------------------------------------------------
+
+if [ $INSTALL_NGINX = "True" ] && [ $ENABLE_SSL = "True" ] && [ $ADMIN_EMAIL != "odoo@example.com" ]  && [ $WEBSITE_NAME != "_" ];then
+  sudo apt-get install certbot python-certbot-nginx
+  sudo certbot --nginx -d $WEBSITE_NAME --noninteractive --agree-tos --email $ADMIN_EMAIL --redirect
+  sudo systemctl reload nginx
+  echo "\n============ SSL/HTTPS is enabled! ========================"
+else
+  echo "\n==== SSL/HTTPS isn't enabled due to choice of the user or because of a misconfiguration! ======"
+fi
+
 echo -e "* Starting Odoo Service"
 sudo su root -c "/etc/init.d/$OE_CONFIG start"
-echo "-----------------------------------------------------------"
+echo "\n========================================================================"
 echo "Done! The Odoo server is up and running. Specifications:"
 echo "Port: $OE_PORT"
 echo "User service: $OE_USER"
@@ -336,7 +304,7 @@ echo "User PostgreSQL: $OE_USER"
 echo "Code location: $OE_USER"
 echo "Addons folder: $OE_USER/$OE_CONFIG/addons/"
 echo "Password superadmin (database): $OE_SUPERADMIN"
-echo "Start Odoo service: sudo service $OE_CONFIG start"
-echo "Stop Odoo service: sudo service $OE_CONFIG stop"
-echo "Restart Odoo service: sudo service $OE_CONFIG restart"
-echo "-----------------------------------------------------------"
+echo "Start Odoo service: sudo systemctl start $OE_CONFIG"
+echo "Stop Odoo service: sudo systemctl stop $OE_CONFIG"
+echo "Restart Odoo service: sudo systemctl restart $OE_CONFIG"
+echo "\n============================================================================"
