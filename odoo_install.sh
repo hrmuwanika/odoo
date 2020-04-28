@@ -296,7 +296,7 @@ else
 fi
 
 echo -e "\n================== Starting Odoo Service ============================="
-sudo systemctl start $OE_CONFIG"
+sudo systemctl start odoo.service"
 echo "\n========================================================================="
 echo "Done! The Odoo server is up and running. Specifications:"
 echo "Port: $OE_PORT"
