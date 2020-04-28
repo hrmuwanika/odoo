@@ -96,7 +96,7 @@ sudo adduser --system --quiet --shell=/bin/bash --home=$OE_HOME --gecos 'ODOO' -
 #The user should also be added to the sudo'ers group.
 sudo adduser $OE_USER sudo
 
-echo -e "\n---- Create Log directory ----"
+echo -e "\n=========== Create Log directory ====================="
 sudo mkdir /var/log/$OE_USER
 sudo chown $OE_USER:$OE_USER /var/log/$OE_USER
 
@@ -108,41 +108,40 @@ sudo git clone --depth 1 --branch $OE_VERSION https://www.github.com/odoo/odoo $
 
 if [ $IS_ENTERPRISE = "True" ]; then
     # Odoo Enterprise install!
-    echo -e "\n--- Create symlink for node"
+    echo -e "\n========== Create symlink for node ===================="
     sudo ln -s /usr/bin/nodejs /usr/bin/node
     sudo su $OE_USER -c "mkdir $OE_HOME/enterprise"
     sudo su $OE_USER -c "mkdir $OE_HOME/enterprise/addons"
 
     GITHUB_RESPONSE=$(sudo git clone --depth 1 --branch $OE_VERSION https://www.github.com/odoo/enterprise "$OE_HOME/enterprise/addons" 2>&1)
     while [[ $GITHUB_RESPONSE == *"Authentication"* ]]; do
-        echo "------------------------WARNING------------------------------"
+        echo "\n====================== WARNING ============================="
         echo "Your authentication with Github has failed! Please try again."
         printf "In order to clone and install the Odoo enterprise version you \nneed to be an offical Odoo partner and you need access to\nhttp://github.com/odoo/enterprise.\n"
         echo "TIP: Press ctrl+c to stop this script."
-        echo "-------------------------------------------------------------"
+        echo "\n==========================================================="
         echo " "
         GITHUB_RESPONSE=$(sudo git clone --depth 1 --branch $OE_VERSION https://www.github.com/odoo/enterprise "$OE_HOME/enterprise/addons" 2>&1)
     done
 
-    echo -e "\n---- Added Enterprise code under $OE_HOME/enterprise/addons ----"
-    echo -e "\n---- Installing Enterprise specific libraries ----"
+    echo -e "\n======== Added Enterprise code under $OE_HOME/enterprise/addons ==========="
+    echo -e "\n========== Installing Enterprise specific libraries ==============="
     sudo pip3 install num2words ofxparse dbfread ebaysdk firebase_admin pyOpenSSL
     sudo npm install -g less
     sudo npm install -g less-plugin-clean-css
 fi
 
-echo -e "\n---- Create custom module directory ----"
+echo -e "\n======== Create custom module directory ================"
 sudo su $OE_USER -c "mkdir $OE_HOME/custom"
 sudo su $OE_USER -c "mkdir $OE_HOME/custom/addons"
 
-echo -e "\n---- Setting permissions on home folder ----"
+echo -e "\n======= Setting permissions on home folder ============="
 sudo chown -R $OE_USER:$OE_USER $OE_HOME/*
 
-echo -e "* Create server config file"
-
+echo -e "\n============== Create server config file ================="
 
 sudo touch /etc/${OE_CONFIG}.conf
-echo -e "* Creating server config file"
+echo -e "\n=========== Creating server config file =================="
 sudo su root -c "printf '[options] \n; This is the password that allows database operations:\n' >> /etc/${OE_CONFIG}.conf"
 if [ $GENERATE_RANDOM_PASSWORD = "True" ]; then
     echo -e "* Generating random admin password"
@@ -164,16 +163,16 @@ fi
 sudo chown $OE_USER:$OE_USER /etc/${OE_CONFIG}.conf
 sudo chmod 640 /etc/${OE_CONFIG}.conf
 
-echo -e "* Create startup file"
+echo -e "\n============== Create startup file ================="
 sudo su root -c "echo '#!/bin/sh' >> $OE_HOME_EXT/start.sh"
 sudo su root -c "echo 'sudo -u $OE_USER $OE_HOME_EXT/odoo-bin --config=/etc/${OE_CONFIG}.conf' >> $OE_HOME_EXT/start.sh"
 sudo chmod 755 $OE_HOME_EXT/start.sh
 
 #--------------------------------------------------
-# Adding ODOO as a deamon (initscript)
+# Adding ODOO as a deamon (Systemd)
 #--------------------------------------------------
 
-echo -e "* Create init file"
+echo -e "\n================= Create Odoo systemd file ======================="
 cat <<EOF > /lib/systemd/system/odoo.service
 [Unit]
 Description=Odoo Open Source ERP and CRM
@@ -194,7 +193,7 @@ StandardOutput=journal+console
 WantedBy=multi-user.target
 EOF
 
-echo -e "========= Odoo startup File ===================="
+echo -e "\n========= Odoo startup File ===================="
 sudo systemctl daemon-reload
 sudo systemctl enable odoo.service
 sudo systemctl start odoo.service
@@ -203,9 +202,12 @@ sudo systemctl start odoo.service
 # Install Nginx if needed
 #--------------------------------------------------
 if [ $INSTALL_NGINX = "True" ]; then
-  echo -e "\n---- Installing and setting up Nginx ----"
+  echo -e "\n======== Installing and setting up Nginx ========="
   sudo apt install nginx -y
+  sudo systemctl enable nginx
+  
   cat <<EOF > ~/odoo
+  
   #odoo server
 upstream odoo {
     server 127.0.0.1:$OE_PORT weight=1 fail_timeout=0;
@@ -221,7 +223,7 @@ server {
    listen [::]:80;
    
    #listen 443;
-   #listen [::]:443 ipv6only=on;
+   #listen [::]:443;
    server_name $WEBSITE_NAME;
    proxy_read_timeout 720s;
    proxy_connect_timeout 720s;
@@ -286,7 +288,7 @@ fi
 #--------------------------------------------------
 
 if [ $INSTALL_NGINX = "True" ] && [ $ENABLE_SSL = "True" ] && [ $ADMIN_EMAIL != "odoo@example.com" ]  && [ $WEBSITE_NAME != "_" ];then
-  sudo apt-get install certbot python-certbot-nginx
+  sudo apt install certbot python-certbot-nginx -y
   sudo certbot --nginx -d $WEBSITE_NAME --noninteractive --agree-tos --email $ADMIN_EMAIL --redirect
   sudo systemctl reload nginx
   echo "\n============ SSL/HTTPS is enabled! ========================"
@@ -294,9 +296,9 @@ else
   echo "\n==== SSL/HTTPS isn't enabled due to choice of the user or because of a misconfiguration! ======"
 fi
 
-echo -e "* Starting Odoo Service"
+echo -e "\n=========== Starting Odoo Service =============="
 sudo su root -c "/etc/init.d/$OE_CONFIG start"
-echo "\n========================================================================"
+echo "\n===================================================================="
 echo "Done! The Odoo server is up and running. Specifications:"
 echo "Port: $OE_PORT"
 echo "User service: $OE_USER"
@@ -307,4 +309,4 @@ echo "Password superadmin (database): $OE_SUPERADMIN"
 echo "Start Odoo service: sudo systemctl start $OE_CONFIG"
 echo "Stop Odoo service: sudo systemctl stop $OE_CONFIG"
 echo "Restart Odoo service: sudo systemctl restart $OE_CONFIG"
-echo "\n============================================================================"
+echo "\n====================================================================="
