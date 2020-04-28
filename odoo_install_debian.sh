@@ -57,7 +57,7 @@ echo -e "\n================ Install PostgreSQL Server ==========================
 wget -q https://www.postgresql.org/media/keys/ACCC4CF8.asc -O- | sudo apt-key add -
 sudo echo "deb http://apt.postgresql.org/pub/repos/apt/ buster-pgdg main" | sudo tee /etc/apt/sources.list.d/postgresql.list
 sudo apt update
-sudo apt install postgresql-10 -y
+sudo apt install postgresql -y
 sudo systemctl enable postgresql
 
 echo -e "\n=========== Creating the ODOO PostgreSQL User ================="
