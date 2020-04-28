@@ -174,6 +174,7 @@ sudo chmod 755 $OE_HOME_EXT/start.sh
 
 echo -e "\n================= Create Odoo systemd file ======================="
 cat <<EOF > /lib/systemd/system/odoo.service
+
 [Unit]
 Description=Odoo Open Source ERP and CRM
 Requires=postgresql.service
