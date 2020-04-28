@@ -313,9 +313,9 @@ echo "User PostgreSQL: $OE_USER"
 echo "Code location: $OE_USER"
 echo "Addons folder: $OE_USER/$OE_CONFIG/addons/"
 echo "Password superadmin (database): $OE_SUPERADMIN"
-echo "Start Odoo service: sudo service $OE_CONFIG start"
-echo "Stop Odoo service: sudo service $OE_CONFIG stop"
-echo "Restart Odoo service: sudo service $OE_CONFIG restart"
+echo "Start Odoo service: sudo systemctl start $OE_CONFIG"
+echo "Stop Odoo service: sudo systemctl stop $OE_CONFIG"
+echo "Restart Odoo service: sudo systemctl restart $OE_CONFIG"
 if [ $INSTALL_NGINX = "True" ]; then
   echo "Nginx configuration file: /etc/nginx/sites-available/odoo"
 fi
