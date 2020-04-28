@@ -211,11 +211,11 @@ if [ $INSTALL_NGINX = "True" ]; then
   
   #odoo server
 upstream odoo {
-    server 127.0.0.1:$OE_PORT weight=1 fail_timeout=0;
+    server 127.0.0.1:$OE_PORT;
 }
 
 upstream odoochat {
-    server 127.0.0.1:$LONGPOLLING_PORT weight=1 fail_timeout=0;
+    server 127.0.0.1:$LONGPOLLING_PORT;
 }
 
 # http to https redirection
