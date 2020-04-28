@@ -224,7 +224,7 @@ server {
    listen [::]:80;
    
    #listen 443;
-   #listen [::]:443 ipv6only=on;
+   #listen [::]:443;
    server_name $WEBSITE_NAME;
    proxy_read_timeout 720s;
    proxy_connect_timeout 720s;
