@@ -168,7 +168,7 @@ sudo chmod 640 /etc/${OE_CONFIG}.conf
 #--------------------------------------------------
 
 echo -e "\n========== Create Odoo systemd file ==============="
-cat <<EOF > /lib/systemd/system/$OE_CONFIG.service
+cat <<EOF > /lib/systemd/system/odoo.service
 
 [Unit]
 Description=Odoo Open Source ERP and CRM
@@ -178,7 +178,7 @@ After=network.target postgresql.service
 [Service]
 Type=simple
 PermissionsStartOnly=true
-SyslogIdentifier=$OE_CONFIG
+SyslogIdentifier=odoo
 User=$OE_USER
 Group=$OE_USER
 ExecStart=$OE_HOME_EXT/odoo-bin --config /etc/${OE_CONFIG}.conf  --logfile /var/log/${OE_USER}/${OE_CONFIG}.log
@@ -216,7 +216,7 @@ upstream odoochat {
 # http -> https
 server {
    listen 80;
-   listen [::]:80 ipv6only=on;
+   listen [::]:80;
    
    #listen 443;
    #listen [::]:443 ipv6only=on;
