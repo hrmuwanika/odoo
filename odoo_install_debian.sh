@@ -7,11 +7,11 @@
 # in one Debian because of the different xmlrpc_ports
 #-------------------------------------------------------------------------------
 # Make a new file:
-# sudo nano odoo_install_debian
+# sudo nano odoo_install_debian.sh
 # Place this content in it and then make the file executable:
-# sudo chmod +x odoo_install_debian
+# sudo chmod +x odoo_install_debian.sh
 # Execute the script to install Odoo:
-# ./odoo_install_debian
+# ./odoo_install_debian.sh
 ################################################################################
 
 OE_USER="odoo"
