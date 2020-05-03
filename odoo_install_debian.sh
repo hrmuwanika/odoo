@@ -72,7 +72,7 @@ sudo -H pip3 install --upgrade pip
 sudo apt install software-properties-common -y
 
 echo -e "\n======== Install python packages/requirements ============"
-sudo pip3 install -r https://github.com/odoo/odoo/raw/${OE_VERSION}/requirements.txt
+sudo pip3 install -r https://raw.githubusercontent.com/odoo/odoo/${OE_VERSION}/requirements.txt
 
 echo -e "\n======== Installing nodeJS NPM and rtlcss for LTR support ==========="
 sudo apt install nodejs npm -y
