@@ -76,7 +76,7 @@ sudo pip3 install -r https://raw.githubusercontent.com/odoo/odoo/${OE_VERSION}/r
 
 echo -e "\n======== Installing nodeJS NPM and rtlcss for LTR support ==========="
 sudo apt install nodejs npm -y
-sudo npm install -g rtlcss
+sudo npm install -g rtlcss less less-plugin-clean-css
 
 #--------------------------------------------------
 # Install Wkhtmltopdf if needed
@@ -88,8 +88,9 @@ sudo npm install -g rtlcss
 ## https://www.odoo.com/documentation/13.0/setup/install.html#debian-ubuntu
 
 wget https://github.com/wkhtmltopdf/wkhtmltopdf/releases/download/0.12.5/wkhtmltox_0.12.5-1.buster_amd64.deb
-sudo dpkg -i wkhtmltox_0.12.5-1.buster_amd64.deb
-sudo apt -f install -y
+sudo apt install ./wkhtmltox_0.12.5-1.buster_amd64.deb
+sudo cp /usr/local/bin/wkhtmltoimage /usr/bin/wkhtmltoimage 
+sudo cp /usr/local/bin/wkhtmltopdf /usr/bin/wkhtmltopdf
 
 echo -e "\n======== Create ODOO system user =========="
 sudo adduser --system --quiet --shell=/bin/bash --home=$OE_HOME --gecos 'ODOO' --group $OE_USER
