@@ -69,7 +69,6 @@ sudo su - postgres -c "createuser -s $OE_USER" 2> /dev/null || true
 echo -e "\n=================== Installing Python 3 + pip3 ============================"
 sudo apt install git build-essential python3-pip python3-dev python3-venv python3-wheel python3-setuptools libpq-dev libxslt-dev libzip-dev libldap2-dev libsasl2-dev libxslt1-dev node-less -y
 sudo -H pip3 install --upgrade pip
-sudo apt install software-properties-common -y
 
 echo -e "\n================== Install python packages/requirements ============================"
 sudo pip3 install -r https://raw.githubusercontent.com/odoo/odoo/${OE_VERSION}/requirements.txt
@@ -87,10 +86,13 @@ sudo npm install -g rtlcss less less-plugin-clean-css
 ## https://github.com/odoo/odoo/wiki/Wkhtmltopdf ):
 ## https://www.odoo.com/documentation/13.0/setup/install.html#debian-ubuntu
 
+sudo apt-get install -y software-properties-common 
+sudo apt-add-repository -y "deb http://security.ubuntu.com/ubuntu bionic-security main" 
+sudo apt-get -y update
+sudo apt-get install -y libxrender1 libfontconfig1 libx11-dev libjpeg62 libxtst6 fontconfig xfonts-75dpi xfonts-base libpng12-0
 wget https://github.com/wkhtmltopdf/wkhtmltopdf/releases/download/0.12.5/wkhtmltox_0.12.5-1.bionic_amd64.deb
-sudo apt install ./wkhtmltox_0.12.5-1.bionic_amd64.deb
-sudo cp /usr/local/bin/wkhtmltoimage /usr/bin/wkhtmltoimage 
-sudo cp /usr/local/bin/wkhtmltopdf /usr/bin/wkhtmltopdf
+sudo dpkg -i wkhtmltox_0.12.5-1.bionic_amd64.deb
+sudo apt -f install
 
 echo -e "\n============== Create ODOO system user ========================"
 sudo adduser --system --quiet --shell=/bin/bash --home=$OE_HOME --gecos 'ODOO' --group $OE_USER
