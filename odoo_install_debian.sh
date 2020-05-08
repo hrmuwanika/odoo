@@ -88,9 +88,8 @@ sudo npm install -g rtlcss less less-plugin-clean-css
 ## https://www.odoo.com/documentation/13.0/setup/install.html#debian-ubuntu
 
 wget https://github.com/wkhtmltopdf/wkhtmltopdf/releases/download/0.12.5/wkhtmltox_0.12.5-1.buster_amd64.deb
-sudo apt install ./wkhtmltox_0.12.5-1.buster_amd64.deb
-sudo cp /usr/local/bin/wkhtmltoimage /usr/bin/wkhtmltoimage 
-sudo cp /usr/local/bin/wkhtmltopdf /usr/bin/wkhtmltopdf
+sudo dpkg -i wkhtmltox_0.12.5-1.buster_amd64.deb
+sudo apt -f install
 
 echo -e "\n======== Create ODOO system user =========="
 sudo adduser --system --quiet --shell=/bin/bash --home=$OE_HOME --gecos 'ODOO' --group $OE_USER
