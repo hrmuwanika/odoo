@@ -76,8 +76,6 @@ wget https://raw.githubusercontent.com/odoo/odoo/${OE_VERSION}/requirements.txt
 sudo pip3 install -r requirements.txt
 
 echo -e "\n======== Installing nodeJS NPM and rtlcss for LTR support ==========="
-sudo apt install curl -y
-curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -
 sudo apt install nodejs npm -y
 sudo npm install -g rtlcss less less-plugin-clean-css
 
@@ -90,10 +88,9 @@ sudo npm install -g rtlcss less less-plugin-clean-css
 ## https://github.com/odoo/odoo/wiki/Wkhtmltopdf ):
 ## https://www.odoo.com/documentation/13.0/setup/install.html#debian-ubuntu
 
-sudo apt install xfonts-75dpi xfonts-base gvfs colord glew-utils libvisual-0.4-plugins gstreamer1.0-tools opus-tools qt5-image-formats-plugins qtwayland5 qt5-qmltooling-plugins librsvg2-bin lm-sensors -y
 wget https://github.com/wkhtmltopdf/wkhtmltopdf/releases/download/0.12.5/wkhtmltox_0.12.5-1.buster_amd64.deb
 sudo dpkg -i wkhtmltox_0.12.5-1.buster_amd64.deb
-sudo apt -f install
+sudo apt -f install -y
 sudo cp /usr/local/bin/wkhtmltopdf /usr/bin/
 sudo cp /usr/local/bin/wkhtmltoimage /usr/bin/
 
