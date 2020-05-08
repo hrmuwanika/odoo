@@ -93,6 +93,8 @@ sudo apt-get install -y libxrender1 libfontconfig1 libx11-dev libjpeg62 libxtst6
 wget https://github.com/wkhtmltopdf/wkhtmltopdf/releases/download/0.12.5/wkhtmltox_0.12.5-1.bionic_amd64.deb
 sudo dpkg -i wkhtmltox_0.12.5-1.bionic_amd64.deb
 sudo apt -f install
+sudo cp /usr/local/bin/wkhtmltopdf /usr/bin/
+sudo cp /usr/local/bin/wkhtmltoimage /usr/bin/
 
 echo -e "\n============== Create ODOO system user ========================"
 sudo adduser --system --quiet --shell=/bin/bash --home=$OE_HOME --gecos 'ODOO' --group $OE_USER
