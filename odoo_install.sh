@@ -88,11 +88,9 @@ sudo npm install -g rtlcss less less-plugin-clean-css
 ## https://www.odoo.com/documentation/13.0/setup/install.html#debian-ubuntu
 
 sudo apt install software-properties-common -y
-sudo apt -f install libxrender1 libjpeg-turbo8 libfontconfig1 fonts-dejavu-core ttf-bitstream-vera fonts-freefont-ttf gsfonts \
-libfontenc1 libxfont1 x11-common xfonts-encodings xfonts-utils gsfonts-x11 fontconfig-config libfontconfig1 fontconfig -y
 sudo wget https://github.com/wkhtmltopdf/wkhtmltopdf/releases/download/0.12.5/wkhtmltox_0.12.5-1.bionic_amd64.deb
-sudo apt install ./wkhtmltox_0.12.5-1.bionic_amd64.deb
-sudo apt -f install
+sudo dpkg -i wkhtmltox_0.12.5-1.bionic_amd64.deb
+sudo apt -f install -y
 sudo cp /usr/local/bin/wkhtmltopdf /usr/bin/
 sudo cp /usr/local/bin/wkhtmltoimage /usr/bin/
 
