@@ -71,9 +71,12 @@ sudo apt install git build-essential python3-pip python3-dev python3-venv python
 sudo -H pip3 install --upgrade pip
 
 echo -e "\n================== Install python packages/requirements ============================"
-sudo pip3 install -r https://raw.githubusercontent.com/odoo/odoo/${OE_VERSION}/requirements.txt
+wget https://raw.githubusercontent.com/odoo/odoo/${OE_VERSION}/requirements.txt
+sudo pip3 install -r requirements.txt
 
 echo -e "\n=========== Installing nodeJS NPM and rtlcss for LTR support =================="
+sudo apt install curl -y
+curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -
 sudo apt install nodejs npm -y
 sudo npm install -g rtlcss less less-plugin-clean-css
 
