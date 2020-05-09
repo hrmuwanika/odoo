@@ -185,13 +185,10 @@ After=network.target postgresql.service
 
 [Service]
 Type=simple
-PermissionsStartOnly=true
-SyslogIdentifier=odoo
 User=$OE_USER
 Group=$OE_USER
 ExecStart=$OE_HOME_EXT/odoo-bin --config /etc/${OE_CONFIG}.conf  --logfile /var/log/${OE_USER}/${OE_CONFIG}.log
-WorkingDirectory=$OE_HOME_EXT
-StandardOutput=journal+console
+KillMode=mixed
 
 [Install]
 WantedBy=multi-user.target
