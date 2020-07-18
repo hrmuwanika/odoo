@@ -58,6 +58,9 @@ sudo apt update
 sudo apt upgrade -y
 sudo apt autoremove -y
 
+sudo apt install -y vim gnupg gnup1
+#### disable vim visual mode in debian Buster ####
+sudo echo "set mouse-=a" >> ~/.vimrc
 #--------------------------------------------------
 # Install PostgreSQL Server
 #--------------------------------------------------
