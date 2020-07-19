@@ -63,10 +63,11 @@ sudo apt autoremove -y
 # Install PostgreSQL Server
 #--------------------------------------------------
 echo -e "\n================ Install PostgreSQL Server =========================="
+sudo apt install -y gnupg gnupg1 gnupg2 curl
 wget -q https://www.postgresql.org/media/keys/ACCC4CF8.asc -O- | sudo apt-key add -
 sudo echo "deb http://apt.postgresql.org/pub/repos/apt/ bionic-pgdg main" | sudo tee /etc/apt/sources.list.d/postgresql.list
 sudo apt update
-sudo apt install postgresql -y
+sudo apt install -y postgresql
 sudo systemctl enable postgresql
 
 echo -e "\n=============== Creating the ODOO PostgreSQL User ========================="
@@ -217,7 +218,7 @@ echo -e "\n======== Installing nginx ============="
 if [ $INSTALL_NGINX = "True" ]; then
   echo -e "\n---- Installing and setting up Nginx ----"
   
-  sudo apt install -y curl gnupg2 ca-certificates lsb-release
+  sudo apt install -y ca-certificates lsb-release
   echo "deb http://nginx.org/packages/mainline/ubuntu `lsb_release -cs` nginx" | sudo tee /etc/apt/sources.list.d/nginx.list
   curl -fsSL https://nginx.org/keys/nginx_signing.key | sudo apt-key add -
   sudo apt-key fingerprint ABF5BD827BD9BF62
