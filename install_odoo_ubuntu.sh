@@ -8,11 +8,11 @@
 # in one Ubuntu because of the different xmlrpc_ports
 #-------------------------------------------------------------------------------
 # Make a new file:
-# sudo nano install_odoo.sh
+# sudo nano install_odoo_ubuntu.sh
 # Place this content in it and then make the file executable:
-# sudo chmod +x install_odoo.sh
+# sudo chmod +x install_odoo_ubuntu.sh
 # Execute the script to install Odoo:
-# ./install_odoo.sh
+# ./install_odoo_ubuntu.sh
 ################################################################################
 
 OE_USER="odoo"
@@ -217,13 +217,14 @@ echo -e "\n======== Installing nginx ============="
 if [ $INSTALL_NGINX = "True" ]; then
   echo -e "\n---- Installing and setting up Nginx ----"
   
-  sudo apt install curl gnupg2 ca-certificates lsb-release
+  sudo apt install -y curl gnupg2 ca-certificates lsb-release
   echo "deb http://nginx.org/packages/mainline/ubuntu `lsb_release -cs` nginx" | sudo tee /etc/apt/sources.list.d/nginx.list
   curl -fsSL https://nginx.org/keys/nginx_signing.key | sudo apt-key add -
   sudo apt-key fingerprint ABF5BD827BD9BF62
   sudo apt update
   sudo apt install -y nginx
   sudo systemctl enable nginx
+  sudo systemctl start nginx
   
 cat <<EOF > ~/odoo
 #odoo server
