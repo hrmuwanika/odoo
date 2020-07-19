@@ -227,7 +227,7 @@ if [ $INSTALL_NGINX = "True" ]; then
   sudo systemctl enable nginx
   sudo systemctl start nginx
   
-  cat <<EOF > ~/odoo
+  cat <<EOF > /etc/nginx/sites-available/odoo
   
   #odoo server
 upstream odoo {
