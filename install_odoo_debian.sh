@@ -1,9 +1,10 @@
 #!/bin/bash
+
 ################################################################################
 # Script for installing Odoo on Debian 10.0 (could be used for other version too)
 # Authors: Henry Robert Muwanika
 #-------------------------------------------------------------------------------
-# This script will install Odoo on your Debian 10.0 server. It can install multiple Odoo instances
+# It can install multiple Odoo instances
 # in one Debian because of the different xmlrpc_ports
 #-------------------------------------------------------------------------------
 # Make a new file:
@@ -58,13 +59,15 @@ sudo apt update
 sudo apt upgrade -y
 sudo apt autoremove -y
 
-sudo apt install -y vim gnupg gnup1
+sudo apt install -y vim
 #### disable vim visual mode in debian Buster ####
 sudo echo "set mouse-=a" >> ~/.vimrc
+
 #--------------------------------------------------
 # Install PostgreSQL Server
 #--------------------------------------------------
 echo -e "\n================ Install PostgreSQL Server =========================="
+sudo apt install -y gnupg gnupg1 gnupg2
 wget -q https://www.postgresql.org/media/keys/ACCC4CF8.asc -O- | sudo apt-key add -
 sudo echo "deb http://apt.postgresql.org/pub/repos/apt/ buster-pgdg main" | sudo tee /etc/apt/sources.list.d/postgresql.list
 sudo apt update
