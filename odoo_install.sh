@@ -39,20 +39,18 @@ WEBSITE_NAME="_"
 # Set the default Odoo longpolling port (you still have to use -c /etc/odoo-server.conf for example to use this.)
 LONGPOLLING_PORT="8072"
 # Set to "True" to install certbot and have ssl enabled, "False" to use http
-ENABLE_SSL="False"
+ENABLE_SSL="True"
 # Provide Email to register ssl certificate
 ADMIN_EMAIL="odoo@example.com"
-
 ##
 ###  WKHTMLTOPDF download links
-## === Ubuntu Bionic x64  === (for other distributions please replace these two links,
+## === Ubuntu Trusty x64 & x32 === (for other distributions please replace these two links,
 ## in order to have correct version of wkhtmltopdf installed, for a danger note refer to
 ## https://github.com/odoo/odoo/wiki/Wkhtmltopdf ):
 ## https://www.odoo.com/documentation/12.0/setup/install.html#debian-ubuntu
 
-WKHTMLTOX_X64=https://github.com/wkhtmltopdf/wkhtmltopdf/releases/download/0.12.5/wkhtmltox_0.12.5-1.bionic_amd64.deb
-WKHTMLTOX_X32=https://github.com/wkhtmltopdf/wkhtmltopdf/releases/download/0.12.5/wkhtmltox_0.12.5-1.bionic_i386.deb
-
+WKHTMLTOX_X64=https://github.com/wkhtmltopdf/wkhtmltopdf/releases/download/0.12.5/wkhtmltox_0.12.5-1.trusty_amd64.deb
+WKHTMLTOX_X32=https://github.com/wkhtmltopdf/wkhtmltopdf/releases/download/0.12.5/wkhtmltox_0.12.5-1.trusty_i386.deb
 #--------------------------------------------------
 # Update Server
 #--------------------------------------------------
@@ -80,8 +78,7 @@ echo -e "\n--- Installing Python 3 + pip3 --"
 sudo apt-get install git python3 python3-pip build-essential wget python3-dev python3-venv python3-wheel libxslt-dev libzip-dev libldap2-dev libsasl2-dev python3-setuptools node-less libpng12-0 libjpeg-dev gdebi -y
 
 echo -e "\n---- Install python packages/requirements ----"
-wget https://raw.githubusercontent.com/odoo/odoo/${OE_VERSION}/requirements.txt
-sudo pip3 install -r requirements.txt
+sudo -H pip3 install -r https://raw.githubusercontent.com/odoo/odoo/${OE_VERSION}/requirements.txt
 
 echo -e "\n---- Installing nodeJS NPM and rtlcss for LTR support ----"
 sudo apt-get install nodejs npm -y
