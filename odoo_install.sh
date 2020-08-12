@@ -80,8 +80,6 @@ sudo chown odoo:odoo /var/log/odoo
 #------------------------------------------------
 # Install Odoo
 #-------------------------------------------------
-sudo su - odoo -s /bin/bash
-
 echo -e "\n==== Installing ODOO Server ===="
 git clone https://www.github.com/odoo/odoo --depth 1 --branch 12.0 /opt/odoo/odoo
 
