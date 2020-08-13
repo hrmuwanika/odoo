@@ -45,7 +45,7 @@ WKHTMLTOX_X32=https://github.com/wkhtmltopdf/wkhtmltopdf/releases/download/0.12.
 echo -e "\n---- Update Server ----"
 
 # add-apt-repository can install add-apt-repository Ubuntu 18.x
-sudo apt-get install software-properties-common
+sudo apt-get install software-properties-common -y
 # universe package is for Ubuntu 18.x
 sudo add-apt-repository universe
 # libpng12-0 dependency for wkhtmltopdf
@@ -74,7 +74,7 @@ wget https://raw.githubusercontent.com/odoo/odoo/${OE_VERSION}/requirements.txt
 sudo pip3 install -r requirements.txt
 
 echo -e "\n---- Installing nodeJS NPM and rtlcss for LTR support ----"
-sudo apt-get install nodejs npm
+sudo apt-get install nodejs npm -y
 sudo npm install -g rtlcss
 
 #--------------------------------------------------
