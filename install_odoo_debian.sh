@@ -81,9 +81,11 @@ sudo su - postgres -c "createuser -s $OE_USER" 2> /dev/null || true
 # Install Dependencies
 #--------------------------------------------------
 echo -e "\n======= Installing Python 3 + pip3 ===================="
-sudo apt install git build-essential python3-pip python3-dev python3-venv python3-wheel python3-setuptools libpq-dev libxslt-dev libzip-dev libldap2-dev libsasl2-dev libxslt1-dev node-less -y
+sudo apt install git build-essential python3-pip python3-dev python3-pillow python3-lxml python3-dateutil python3-venv python3-wheel \
+wget python3-setuptools libpq-dev libxslt-dev libxml2-dev libzip-dev libldap2-dev libsasl2-dev libxslt1-dev libjpeg-dev node-less -y
 sudo -H pip3 install --upgrade pip
-sudo apt install software-properties-common -y
+pip3 install werkzeug babel passlib lxml decorator jinja2 psutil html2text docutils num2words reportlab werkzeug
+python3 -m pip3 install psycopg2-binary
 
 echo -e "\n======== Install python packages/requirements ============"
 wget https://raw.githubusercontent.com/odoo/odoo/${OE_VERSION}/requirements.txt
