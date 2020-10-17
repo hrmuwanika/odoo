@@ -21,7 +21,7 @@ OE_HOME_EXT="/$OE_USER/${OE_USER}-server"
 # The default port where this Odoo instance will run under (provided you use the command -c in the terminal)
 # Set the default Odoo port (you still have to use -c /etc/odoo-server.conf for example to use this.)
 OE_PORT="8069"
-# Choose the Odoo version which you want to install. For example: 13.0, 12.0, 11.0 or saas-18. When using 'master' the master version will be installed.
+# Choose the Odoo version which you want to install. For example: 14.0, 13.0, 12.0, 11.0 or saas-18. When using 'master' the master version will be installed.
 # IMPORTANT! This script contains extra libraries that are specifically needed for Odoo 13.0
 OE_VERSION="14.0"
 # Set this to True if you want to install the Odoo enterprise version!
@@ -77,8 +77,8 @@ sudo su - postgres -c "createuser -s $OE_USER" 2> /dev/null || true
 # Install Dependencies
 #--------------------------------------------------
 echo -e "\n=================== Installing Python 3 + pip3 ============================"
-sudo apt install git build-essential python3-pip python3-dev python3-pillow python3-lxml python3-dateutil python3-venv python3-wheel \
-wget python3-setuptools libpq-dev libxslt-dev libxml2-dev libzip-dev libldap2-dev libsasl2-dev libxslt1-dev libjpeg-dev node-less -y
+sudo apt install git build-essential python3 python3-pip python3-dev python3-pillow python3-lxml python3-dateutil python3-venv python3-wheel \
+wget python3-setuptools libpq-dev libxslt-dev libxml2-dev libzip-dev libldap2-dev libsasl2-dev libxslt1-dev libjpeg-dev node-less gdebi -y
 sudo -H pip3 install --upgrade pip
 pip3 install babel passlib lxml decorator jinja2 psutil html2text docutils num2words reportlab Werkzeug==0.14.1
 python3 -m pip3 install psycopg2-binary
