@@ -23,7 +23,7 @@ OE_HOME_EXT="/$OE_USER/${OE_USER}-server"
 OE_PORT="8069"
 # Choose the Odoo version which you want to install. For example: 13.0, 12.0, 11.0 or saas-18. When using 'master' the master version will be installed.
 # IMPORTANT! This script contains extra libraries that are specifically needed for Odoo 13.0
-OE_VERSION="13.0"
+OE_VERSION="14.0"
 # Set this to True if you want to install the Odoo enterprise version!
 IS_ENTERPRISE="False"
 # Set this to True if you want to install Nginx!
@@ -101,8 +101,8 @@ sudo npm install -g rtlcss less less-plugin-clean-css
 ## https://www.odoo.com/documentation/13.0/setup/install.html#debian-ubuntu
 
 sudo apt install software-properties-common -y
-sudo wget https://github.com/wkhtmltopdf/wkhtmltopdf/releases/download/0.12.5/wkhtmltox_0.12.5-1.bionic_amd64.deb
-sudo dpkg -i wkhtmltox_0.12.5-1.bionic_amd64.deb
+sudo wget https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6-1/wkhtmltox_0.12.6-1.bionic_amd64.deb
+sudo dpkg -i wkhtmltox_0.12.6-1.bionic_amd64.deb
 sudo apt -f install -y
 sudo cp /usr/local/bin/wkhtmltopdf /usr/bin/
 sudo cp /usr/local/bin/wkhtmltoimage /usr/bin/
