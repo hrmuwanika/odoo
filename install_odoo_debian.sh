@@ -81,8 +81,8 @@ sudo su - postgres -c "createuser -s $OE_USER" 2> /dev/null || true
 # Install Dependencies
 #--------------------------------------------------
 echo -e "\n======= Installing Python 3 + pip3 ===================="
-sudo apt install git build-essential python3-pip python3-dev python3-pillow python3-lxml python3-dateutil python3-venv python3-wheel \
-wget python3-setuptools libpq-dev libxslt-dev libxml2-dev libzip-dev libldap2-dev libsasl2-dev libxslt1-dev libjpeg-dev node-less -y
+sudo apt install git build-essential python3 python3-pip python3-dev python3-pillow python3-lxml python3-dateutil python3-venv python3-wheel \
+wget python3-setuptools libpq-dev libxslt-dev libxml2-dev libzip-dev libldap2-dev libsasl2-dev libxslt1-dev libjpeg-dev node-less gdebi -y
 sudo -H pip3 install --upgrade pip
 pip3 install babel passlib lxml decorator jinja2 psutil html2text docutils num2words reportlab Werkzeug==0.14.1
 python3 -m pip3 install psycopg2-binary
@@ -104,6 +104,8 @@ sudo npm install -g rtlcss less less-plugin-clean-css
 ## https://github.com/odoo/odoo/wiki/Wkhtmltopdf ):
 ## https://www.odoo.com/documentation/13.0/setup/install.html#debian-ubuntu
 
+sudo apt install software-properties-common -y
+sudo apt install xfonts-75dpi -y
 wget https://github.com/wkhtmltopdf/wkhtmltopdf/releases/download/0.12.6/wkhtmltox_0.12.6-1.buster_amd64.deb
 sudo dpkg -i wkhtmltox_0.12.6-1.buster_amd64.deb
 sudo apt -f install -y
