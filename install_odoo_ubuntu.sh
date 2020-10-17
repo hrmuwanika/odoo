@@ -101,6 +101,7 @@ sudo npm install -g rtlcss less less-plugin-clean-css
 ## https://www.odoo.com/documentation/13.0/setup/install.html#debian-ubuntu
 
 sudo apt install software-properties-common -y
+sudo apt install xfonts-75dpi -y
 sudo wget https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6-1/wkhtmltox_0.12.6-1.bionic_amd64.deb
 sudo dpkg -i wkhtmltox_0.12.6-1.bionic_amd64.deb
 sudo apt -f install -y
