@@ -25,7 +25,7 @@ OE_PORT="8069"
 # IMPORTANT! This script contains extra libraries that are specifically needed for Odoo 13.0
 OE_VERSION="14.0"
 # Set this to True if you want to install the Odoo enterprise version!
-IS_ENTERPRISE="False"
+IS_ENTERPRISE="True"
 # Set this to True if you want to install Nginx!
 INSTALL_NGINX="True"
 # Set the superadmin password - if GENERATE_RANDOM_PASSWORD is set to "True" we will automatically generate a random password, otherwise we use this one
@@ -78,10 +78,13 @@ sudo su - postgres -c "createuser -s $OE_USER" 2> /dev/null || true
 #--------------------------------------------------
 echo -e "\n=================== Installing Python 3 + pip3 ============================"
 sudo apt install git build-essential python3 python3-pip python3-dev python3-pillow python3-lxml python3-dateutil python3-venv python3-wheel \
-wget python3-setuptools libpq-dev libxslt-dev libxml2-dev libzip-dev libldap2-dev libsasl2-dev libxslt1-dev libjpeg-dev node-less gdebi -y
+wget python3-setuptools libfreetype6-dev libpq-dev libxslt1-dev libxml2-dev libzip-dev libldap2-dev libsasl2-dev libxslt1-dev node-less gdebi \
+zlib1g-dev libtiff5-dev libjpeg8-dev libopenjp2-7-dev liblcms2-dev libwebp-dev libharfbuzz-dev libfribidi-dev libxcb1-dev -y
+
 sudo -H pip3 install --upgrade pip
-pip3 install babel passlib lxml decorator jinja2 psutil html2text docutils num2words reportlab Werkzeug==0.14.1
-python3 -m pip3 install psycopg2-binary
+pip3 install Babel decorator docutils ebaysdk feedparser gevent greenlet html2text Jinja2 lxml Mako MarkupSafe mock num2words ofxparse \
+passlib Pillow psutil psycogreen psycopg2 pydot pyparsing PyPDF2 pyserial python-dateutil python-openid pytz pyusb PyYAML qrcode reportlab \
+requests six suds-jurko vatnumber vobject Werkzeug XlsxWriter xlwt xlrd polib
 
 echo -e "\n================== Install python packages/requirements ============================"
 wget https://raw.githubusercontent.com/odoo/odoo/${OE_VERSION}/requirements.txt
@@ -89,6 +92,7 @@ sudo pip3 install -r requirements.txt
 
 echo -e "\n=========== Installing nodeJS NPM and rtlcss for LTR support =================="
 sudo apt install nodejs npm -y
+sudo ln -s /usr/bin/nodejs /usr/bin/node
 sudo npm install -g rtlcss less less-plugin-clean-css
 
 #--------------------------------------------------
@@ -103,8 +107,7 @@ sudo npm install -g rtlcss less less-plugin-clean-css
 sudo apt install software-properties-common -y
 sudo apt install xfonts-75dpi -y
 sudo wget https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6-1/wkhtmltox_0.12.6-1.bionic_amd64.deb
-sudo dpkg -i wkhtmltox_0.12.6-1.bionic_amd64.deb
-sudo apt -f install -y
+apt install ./wkhtmltox_0.12.6-1.bionic_amd64.deb
 sudo cp /usr/local/bin/wkhtmltopdf /usr/bin/
 sudo cp /usr/local/bin/wkhtmltoimage /usr/bin/
 
