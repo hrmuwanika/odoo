@@ -13,7 +13,7 @@
  mkdir /odoo/enterprise/addons
  wget https://www.soladrive.com/downloads/enterprise-14.0.tar.gz
  tar -zxvf enterprise-14.0.tar.gz
- cp -rf enterprise-14.0/* /odoo/enterprise/addons
+ cp -rf 14.0/* /odoo/enterprise/addons
 
 # vim /etc/odoo-server.conf
 #    addons_path = /odoo/enterprise/addons,/odoo/odoo-server/addons
