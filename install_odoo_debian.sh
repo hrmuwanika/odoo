@@ -82,7 +82,7 @@ sudo su - postgres -c "createuser -s $OE_USER" 2> /dev/null || true
 #--------------------------------------------------
 eecho -e "\n=================== Installing Python 3 + pip3 ============================"
 sudo apt install git build-essential python3 python3-pip python3-dev python3-pillow python3-lxml python3-dateutil python3-venv python3-wheel \
-wget python3-setuptools libfreetype6-dev libpq-dev libxslt1-dev libxml2-dev libzip-dev libldap2-dev libsasl2-dev libxslt1-dev node-less gdebi \
+wget python3-setuptools libfreetype6-dev libpq-dev libxslt-dev libxml2-dev libzip-dev libldap2-dev libsasl2-dev libxslt1-dev node-less gdebi \
 zlib1g-dev libtiff5-dev libjpeg8-dev libopenjp2-7-dev liblcms2-dev libwebp-dev libharfbuzz-dev libfribidi-dev libxcb1-dev -y
 
 sudo -H pip3 install --upgrade pip
