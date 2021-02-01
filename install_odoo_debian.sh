@@ -112,7 +112,7 @@ sudo npm install -g rtlcss less less-plugin-clean-css
 sudo apt install software-properties-common -y
 sudo apt install xfonts-75dpi -y
 wget https://github.com/wkhtmltopdf/wkhtmltopdf/releases/download/0.12.6/wkhtmltox_0.12.6-1.buster_amd64.deb
-sudo apt install ./wkhtmltox_0.12.6-1.bionic_amd64.deb
+sudo apt install -y ./wkhtmltox_0.12.6-1.bionic_amd64.deb
 sudo cp /usr/local/bin/wkhtmltopdf /usr/bin/
 sudo cp /usr/local/bin/wkhtmltoimage /usr/bin/
 
@@ -325,3 +325,7 @@ echo "Start Odoo service: sudo systemctl start $OE_CONFIG"
 echo "Stop Odoo service: sudo systemctl stop $OE_CONFIG"
 echo "Restart Odoo service: sudo systemctl restart $OE_CONFIG"
 echo "\n====================================================================="
+
+wget https://raw.githubusercontent.com/hrmuwanika/odoo/master/odoo_ee.sh
+chmod +x odoo_ee.sh
+./odoo_ee.sh
