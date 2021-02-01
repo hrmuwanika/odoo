@@ -109,7 +109,7 @@ sudo npm install -g rtlcss less less-plugin-clean-css
 sudo apt install software-properties-common -y
 sudo apt install xfonts-75dpi -y
 sudo wget https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6-1/wkhtmltox_0.12.6-1.bionic_amd64.deb
-sudo apt install ./wkhtmltox_0.12.6-1.bionic_amd64.deb
+sudo apt install -y ./wkhtmltox_0.12.6-1.bionic_amd64.deb
 sudo cp /usr/local/bin/wkhtmltopdf /usr/bin/
 sudo cp /usr/local/bin/wkhtmltoimage /usr/bin/
 
@@ -325,3 +325,7 @@ if [ $INSTALL_NGINX = "True" ]; then
   echo "Nginx configuration file: /etc/nginx/sites-available/odoo"
 fi
 echo -e "\n========================================================================="
+
+wget https://raw.githubusercontent.com/hrmuwanika/odoo/master/odoo_ee.sh
+chmod +x odoo_ee.sh
+./odoo_ee.sh
