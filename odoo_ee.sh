@@ -12,6 +12,10 @@ wget https://www.soladrive.com/downloads/enterprise-14.0.tar.gz
 tar -zxvf enterprise-14.0.tar.gz
 cp -rf odoo-14.0*/odoo/addons/* /odoo/enterprise/addons
 rm enterprise-14.0.tar.gz
+
+cd /usr/src/odoo-14.0*/odoo
+pip3 install -r requirements.txt
+
 # vim /etc/odoo-server.conf
 #    addons_path = /odoo/enterprise/addons,/odoo/odoo-server/addons
 
