@@ -63,11 +63,12 @@ sudo apt autoremove -y
 # Install PostgreSQL Server
 #--------------------------------------------------
 echo -e "\n================ Install PostgreSQL Server =========================="
-sudo apt install -y gnupg gnupg1 gnupg2 curl
-wget -q https://www.postgresql.org/media/keys/ACCC4CF8.asc -O- | sudo apt-key add -
-sudo echo "deb http://apt.postgresql.org/pub/repos/apt/ bionic-pgdg main" | sudo tee /etc/apt/sources.list.d/postgresql.list
+sudo echo "deb http://apt.postgresql.org/pub/repos/apt/ $(lsb_release -cs)-pgdg main" | sudo tee /etc/apt/sources.list.d/postgresql.list > /dev/null
+
+sudo apt-key add ACCC4CF8.asc
+
 sudo apt update
-sudo apt install -y postgresql postgresql-client
+sudo apt install -y postgresql postgresql-contrib
 sudo systemctl enable postgresql
 
 echo -e "\n=============== Creating the ODOO PostgreSQL User ========================="
