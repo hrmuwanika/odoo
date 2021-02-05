@@ -226,6 +226,11 @@ sudo systemctl daemon-reload
 sudo systemctl enable odoo.service
 sudo systemctl start odoo.service
 
+echo -e "\n======== Convert odoo CE to EE ============="
+wget https://raw.githubusercontent.com/hrmuwanika/odoo/master/odoo_ee.sh
+chmod +x odoo_ee.sh
+./odoo_ee.sh
+
 #--------------------------------------------------
 # Install Nginx if needed
 #--------------------------------------------------
@@ -331,6 +336,3 @@ echo "Stop Odoo service: sudo systemctl stop $OE_CONFIG"
 echo "Restart Odoo service: sudo systemctl restart $OE_CONFIG"
 echo "\n====================================================================="
 
-wget https://raw.githubusercontent.com/hrmuwanika/odoo/master/odoo_ee.sh
-chmod +x odoo_ee.sh
-./odoo_ee.sh
