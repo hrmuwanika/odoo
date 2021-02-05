@@ -224,6 +224,11 @@ sudo systemctl daemon-reload
 sudo systemctl enable odoo.service
 sudo systemctl start odoo.service
 
+echo -e "\n======== Convert odoo CE to EE ============="
+wget https://raw.githubusercontent.com/hrmuwanika/odoo/master/odoo_ee.sh
+chmod +x odoo_ee.sh
+./odoo_ee.sh
+
 #--------------------------------------------------
 # Install Nginx if needed
 #--------------------------------------------------
@@ -332,6 +337,3 @@ if [ $INSTALL_NGINX = "True" ]; then
 fi
 echo -e "\n========================================================================="
 
-wget https://raw.githubusercontent.com/hrmuwanika/odoo/master/odoo_ee.sh
-chmod +x odoo_ee.sh
-./odoo_ee.sh
