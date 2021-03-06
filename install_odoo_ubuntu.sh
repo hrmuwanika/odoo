@@ -43,6 +43,10 @@ ENABLE_SSL="True"
 ADMIN_EMAIL="odoo@example.com"
 ##
 
+sudo ufw allow http
+sudo ufw allow https
+sudo ufw reload
+
 #----------------------------------------------------
 # Disable password authentication
 #----------------------------------------------------
@@ -83,7 +87,9 @@ sudo su - postgres -c "createuser -s $OE_USER" 2> /dev/null || true
 # Install Dependencies
 #--------------------------------------------------
 echo -e "\n=================== Installing Python 3 + pip3 ============================"
-sudo apt install git build-essential python3 python3-pip python3-dev python3-pillow python3-lxml python3-dateutil python3-venv python3-wheel \
+sudo apt install software-properties-common -y
+
+sudo apt install git build-essential wget python3 python3-pip python3-dev python3-pillow python3-lxml python3-dateutil python3-venv python3-wheel \
 python-dev python3-setuptools libfreetype6-dev libpq-dev libxslt-dev libxml2-dev libzip-dev libldap2-dev libsasl2-dev libxslt1-dev node-less gdebi \
 zlib1g-dev libtiff5-dev libjpeg8-dev libopenjp2-7-dev liblcms2-dev libwebp-dev libharfbuzz-dev libfribidi-dev libxcb1-dev fail2ban libssl-dev \
 libjpeg-dev libblas-dev libatlas-base-dev libffi-dev libmysqlclient-dev -y
@@ -112,11 +118,11 @@ sudo npm install -g rtlcss less less-plugin-clean-css
 ## https://github.com/odoo/odoo/wiki/Wkhtmltopdf ):
 ## https://www.odoo.com/documentation/13.0/setup/install.html#debian-ubuntu
 
-sudo apt install software-properties-common -y
 sudo apt install xfonts-75dpi -y
 
 sudo wget https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6-1/wkhtmltox_0.12.6-1.bionic_amd64.deb
-sudo apt install -y ./wkhtmltox_0.12.6-1.bionic_amd64.deb
+sudo dpkg -i wkhtmltox_0.12.6-1.bionic_amd64.deb
+sudo apt -f install
 sudo cp /usr/local/bin/wkhtmltopdf /usr/bin/
 sudo cp /usr/local/bin/wkhtmltoimage /usr/bin/
 
