@@ -4,7 +4,7 @@
 # Script for installing Odoo on Debian 10.0 (could be used for other version too)
 # Authors: Henry Robert Muwanika
 #-------------------------------------------------------------------------------
-# It can install multiple Odoo instances
+# This script will install Odoo on your Debian 10.0 server. It can install multiple Odoo instances
 # in one Debian because of the different xmlrpc_ports
 #-------------------------------------------------------------------------------
 # Make a new file:
@@ -21,8 +21,8 @@ OE_HOME_EXT="/$OE_USER/${OE_USER}-server"
 # The default port where this Odoo instance will run under (provided you use the command -c in the terminal)
 # Set the default Odoo port (you still have to use -c /etc/odoo-server.conf for example to use this.)
 OE_PORT="8069"
-# Choose the Odoo version which you want to install. For example: 13.0, 12.0, 11.0 or saas-18. When using 'master' the master version will be installed.
-# IMPORTANT! This script contains extra libraries that are specifically needed for Odoo 13.0
+# Choose the Odoo version which you want to install. For example: 14.0, 13.0, 12.0, 11.0 or saas-18. When using 'master' the master version will be installed.
+# IMPORTANT! This script contains extra libraries that are specifically needed for Odoo 14.0
 OE_VERSION="14.0"
 # Set this to True if you want to install the Odoo enterprise version!
 IS_ENTERPRISE="True"
@@ -57,7 +57,6 @@ sudo service sshd restart
 echo -e "\n============= Update Server ================"
 sudo apt update
 sudo apt upgrade -y
-sudo apt autoremove -y
 
 sudo apt install -y vim
 #### disable vim visual mode in debian Buster ####
@@ -66,17 +65,7 @@ sudo echo "set mouse-=a" >> ~/.vimrc
 #--------------------------------------------------
 # Install PostgreSQL Server
 #--------------------------------------------------
-# Create the file repository configuration:
-echo -e "\n=========== Installing PostgreSQL ================="
-sudo echo "deb http://apt.postgresql.org/pub/repos/apt/ $(lsb_release -cs)-pgdg main" | sudo tee /etc/apt/sources.list.d/pgdg.list > /dev/null
-
-# Import the repository signing key:
-wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
-
-# Update the package lists:
-sudo apt-get update
-
-sudo apt install -y postgresql postgresql-contrib
+sudo apt install -y postgresql 
 sudo systemctl enable postgresql
 
 echo -e "\n=========== Creating the ODOO PostgreSQL User ================="
@@ -85,7 +74,7 @@ sudo su - postgres -c "createuser -s $OE_USER" 2> /dev/null || true
 #--------------------------------------------------
 # Install Dependencies
 #--------------------------------------------------
-eecho -e "\n=================== Installing Python 3 + pip3 ============================"
+echo -e "\n=================== Installing Python 3 + pip3 ============================"
 sudo apt install git build-essential python3 python3-pip python3-dev python3-pillow python3-lxml python3-dateutil python3-venv python3-wheel \
 wget python3-setuptools libfreetype6-dev libpq-dev libxslt-dev libxml2-dev libzip-dev libldap2-dev libsasl2-dev libxslt1-dev node-less gdebi \
 zlib1g-dev libtiff5-dev libjpeg8-dev libopenjp2-7-dev liblcms2-dev libwebp-dev libharfbuzz-dev libfribidi-dev libxcb1-dev fail2ban libssl-dev \
@@ -103,7 +92,7 @@ sudo pip3 install -r requirements.txt
 echo -e "\n=========== Installing nodeJS NPM and rtlcss for LTR support =================="
 sudo apt install nodejs npm -y
 sudo ln -s /usr/bin/nodejs /usr/bin/node
-sudo npm install -g rtlcss less less-plugin-clean-css
+sudo npm install -g less less-plugin-clean-css
 
 #--------------------------------------------------
 # Install Wkhtmltopdf if needed
@@ -138,6 +127,7 @@ sudo git clone --depth 1 --branch $OE_VERSION https://www.github.com/odoo/odoo $
 
 if [ $IS_ENTERPRISE = "True" ]; then
     # Odoo Enterprise install!
+    sudo pip3 install psycopg2-binary pdfminer.six
     echo -e "\n========== Create symlink for node ===================="
     sudo ln -s /usr/bin/nodejs /usr/bin/node
     sudo su $OE_USER -c "mkdir $OE_HOME/enterprise"
@@ -242,7 +232,7 @@ if [ $INSTALL_NGINX = "True" ]; then
   
   cat <<EOF > /etc/nginx/sites-available/odoo
   
-  #odoo server
+ #odoo server
 upstream odoo {
     server 127.0.0.1:$OE_PORT;
 }
@@ -258,41 +248,52 @@ server {
     server_name $WEBSITE_NAME;
    
     # Proxy settings
-    proxy_read_timeout 720s;
-    proxy_connect_timeout 720s;
-    proxy_send_timeout 720s;
-
+    proxy_read_timeout 900s;
+    proxy_connect_timeout 900s;
+    proxy_send_timeout 900s;
+   
     # Add Headers for odoo proxy mode
     proxy_set_header X-Forwarded-Host \$host;
     proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
     proxy_set_header X-Forwarded-Proto \$scheme;
     proxy_set_header X-Real-IP \$remote_addr;
-
+    
+    add_header X-Frame-Options "SAMEORIGIN";
+    add_header X-XSS-Protection "1; mode=block";
+    proxy_set_header X-Client-IP \$remote_addr;
+    proxy_set_header HTTP_X_FORWARDED_HOST \$remote_addr;
+   
     # log
     access_log /var/log/nginx/$OE_USER-access.log;
     error_log /var/log/nginx/$OE_USER-error.log;
-
+   
     # Request for root domain
     location / {
     proxy_redirect off;
     proxy_pass http://odoo;
     }
-
+   
     location /longpolling {
     proxy_pass http://odoochat;
     }
-
+   
     # Cache static files.
     location ~* /[0-9a-zA-Z_]*/static/ {
-                proxy_cache_valid 200 90m;
+                proxy_cache_valid 200 302 60m;
                 proxy_buffering on;
                 expires 864000;
                 proxy_pass http://odoo;
     }
-
-    # Gzip Compression
-    gzip_types text/css text/scss text/plain text/xml application/xml application/json application/javascript;
+   
+    #   enable data compression
     gzip on;
+    gzip_min_length 1100;
+    gzip_buffers    4   32k;
+    gzip_types  text/css text/less text/plain text/xml application/xml application/json application/javascript application/pdf image/jpeg image/png;
+    gzip_vary on;
+    client_header_buffer_size 4k;
+    large_client_header_buffers 4 64k;
+    client_max_body_size 0;
 }
 EOF
 
