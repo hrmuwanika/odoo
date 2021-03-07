@@ -80,17 +80,15 @@ sudo su - postgres -c "createuser -s $OE_USER" 2> /dev/null || true
 echo -e "\n=================== Installing Python 3 + pip3 ============================"
 sudo apt install software-properties-common -y
 
-sudo apt-get install build-essential git wget python3 python3-pip python3-dev python3-venv \
+sudo apt-get install build-essential git wget python3 python3-pip python3-dev python3-venv python3-pillow python3-venv \
 python3-wheel libxslt-dev libzip-dev libldap2-dev libsasl2-dev python3-setuptools node-less libpng12-0 libjpeg-dev gdebi -y
 
-sudo apt install libfreetype6-dev libpq-dev libxslt-dev libxml2-dev libzip-dev libxslt1-dev zlib1g-dev libtiff5-dev libjpeg8-dev \
-libopenjp2-7-dev liblcms2-dev libwebp-dev libharfbuzz-dev libfribidi-dev libxcb1-dev libssl-dev libblas-dev libatlas-base-dev \
-libffi-dev libmysqlclient-dev -y
-
-sudo -H pip3 install --upgrade pip
+sudo apt install libfreetype6-dev libpq-dev libxml2-dev libxslt1-dev zlib1g-dev libtiff5-dev libjpeg8-dev libopenjp2-7-dev \
+liblcms2-dev libwebp-dev libharfbuzz-dev libfribidi-dev libxcb1-dev libssl-dev libblas-dev libatlas-base-dev libffi-dev -y
 
 echo -e "\n================== Install python packages/requirements ============================"
 wget https://raw.githubusercontent.com/odoo/odoo/${OE_VERSION}/requirements.txt
+sudo -H pip3 install --upgrade pip
 sudo pip3 install -r requirements.txt
 
 echo -e "\n=========== Installing nodeJS NPM and rtlcss for LTR support =================="
@@ -116,6 +114,7 @@ sudo cp /usr/local/bin/wkhtmltoimage /usr/bin/
 
 echo -e "\n============== Create ODOO system user ========================"
 sudo adduser --system --quiet --shell=/bin/bash --home=$OE_HOME --gecos 'ODOO' --group $OE_USER
+
 #The user should also be added to the sudo'ers group.
 sudo adduser $OE_USER sudo
 
@@ -233,7 +232,6 @@ if [ $INSTALL_NGINX = "True" ]; then
   echo -e "\n---- Installing and setting up Nginx ----"
   sudo apt install -y nginx
   sudo systemctl enable nginx
-  sudo systemctl start nginx
   
 cat <<EOF > /etc/nginx/sites-available/odoo
 #odoo server
@@ -261,6 +259,7 @@ server {
     proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
     proxy_set_header X-Forwarded-Proto \$scheme;
     proxy_set_header X-Real-IP \$remote_addr;
+    
     add_header X-Frame-Options "SAMEORIGIN";
     add_header X-XSS-Protection "1; mode=block";
     proxy_set_header X-Client-IP \$remote_addr;
