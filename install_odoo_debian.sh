@@ -87,6 +87,7 @@ requests six suds-jurko vatnumber vobject Werkzeug XlsxWriter xlwt xlrd polib
 
 echo -e "\n================== Install python packages/requirements ============================"
 wget https://raw.githubusercontent.com/odoo/odoo/${OE_VERSION}/requirements.txt
+sudo -H pip3 install --upgrade pip
 sudo pip3 install -r requirements.txt
 
 echo -e "\n=========== Installing nodeJS NPM and rtlcss for LTR support =================="
