@@ -89,12 +89,13 @@ liblcms2-dev libwebp-dev libharfbuzz-dev libfribidi-dev libxcb1-dev libssl-dev l
 echo -e "\n================== Install python packages/requirements ============================"
 wget https://raw.githubusercontent.com/odoo/odoo/${OE_VERSION}/requirements.txt
 sudo -H pip3 install --upgrade pip
+sudo pip3 install babel PyPDF2 jinja2 psutil decorator passlib
 sudo pip3 install -r requirements.txt
 
 echo -e "\n=========== Installing nodeJS NPM and rtlcss for LTR support =================="
 sudo apt install nodejs npm -y
 sudo ln -s /usr/bin/nodejs /usr/bin/node
-sudo npm install -g rtlcss less less-plugin-clean-css
+sudo npm install -g less less-plugin-clean-css
 
 #--------------------------------------------------
 # Install Wkhtmltopdf if needed
