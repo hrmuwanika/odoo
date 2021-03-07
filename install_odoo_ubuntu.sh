@@ -4,7 +4,7 @@
 # Script for installing Odoo on Ubuntu 18.04 LTS (could be used for other version too)
 # Author: Henry Robert Muwanika
 #-------------------------------------------------------------------------------
-# It can install multiple Odoo instances
+# This script will install Odoo on your Ubuntu 18.04 server. It can install multiple Odoo instances
 # in one Ubuntu because of the different xmlrpc_ports
 #-------------------------------------------------------------------------------
 # Make a new file:
@@ -42,11 +42,6 @@ ENABLE_SSL="True"
 # Provide Email to register ssl certificate
 ADMIN_EMAIL="odoo@example.com"
 ##
-
-sudo ufw allow http
-sudo ufw allow https
-sudo ufw reload
-
 #----------------------------------------------------
 # Disable password authentication
 #----------------------------------------------------
@@ -59,6 +54,12 @@ sudo service sshd restart
 # Update Server
 #--------------------------------------------------
 echo -e "\n============== Update Server ======================="
+# universe package is for Ubuntu 18.x
+sudo add-apt-repository universe
+
+# libpng12-0 dependency for wkhtmltopdf
+sudo add-apt-repository "deb http://mirrors.kernel.org/ubuntu/ xenial main"
+
 sudo apt update 
 sudo apt upgrade -y
 sudo apt autoremove -y
@@ -67,7 +68,7 @@ sudo apt autoremove -y
 # Install PostgreSQL Server
 #--------------------------------------------------
 echo -e "\n================ Install PostgreSQL Server =========================="
-sudo apt install -y postgresql postgresql-contrib
+sudo apt install postgresql postgresql-server-dev-all -y
 sudo systemctl enable postgresql
 
 echo -e "\n=============== Creating the ODOO PostgreSQL User ========================="
@@ -79,20 +80,18 @@ sudo su - postgres -c "createuser -s $OE_USER" 2> /dev/null || true
 echo -e "\n=================== Installing Python 3 + pip3 ============================"
 sudo apt install software-properties-common -y
 
-sudo apt install git build-essential wget python3 python3-pip python3-dev python3-pillow python3-lxml python3-dateutil python3-venv python3-wheel \
-python-dev python3-setuptools libfreetype6-dev libpq-dev libxslt-dev libxml2-dev libzip-dev libldap2-dev libsasl2-dev libxslt1-dev node-less gdebi \
-zlib1g-dev libtiff5-dev libjpeg8-dev libopenjp2-7-dev liblcms2-dev libwebp-dev libharfbuzz-dev libfribidi-dev libxcb1-dev fail2ban libssl-dev \
-libjpeg-dev libblas-dev libatlas-base-dev libffi-dev libmysqlclient-dev -y
+sudo apt-get install build-essential git wget python3 python3-pip python3-dev python3-venv \
+python3-wheel libxslt-dev libzip-dev libldap2-dev libsasl2-dev python3-setuptools node-less libpng12-0 libjpeg-dev gdebi -y
+
+sudo apt install libfreetype6-dev libpq-dev libxslt-dev libxml2-dev libzip-dev libxslt1-dev zlib1g-dev libtiff5-dev libjpeg8-dev \
+libopenjp2-7-dev liblcms2-dev libwebp-dev libharfbuzz-dev libfribidi-dev libxcb1-dev libssl-dev libblas-dev libatlas-base-dev \
+libffi-dev libmysqlclient-dev -y
 
 sudo -H pip3 install --upgrade pip
-pip3 install Babel decorator docutils ebaysdk feedparser gevent greenlet html2text Jinja2 lxml Mako MarkupSafe mock num2words ofxparse \
-passlib Pillow psutil psycogreen psycopg2 pydot pyparsing PyPDF2 pyserial python-dateutil python-openid pytz pyusb PyYAML qrcode reportlab \
-requests six suds-jurko vatnumber vobject Werkzeug XlsxWriter xlwt xlrd polib
 
 echo -e "\n================== Install python packages/requirements ============================"
 wget https://raw.githubusercontent.com/odoo/odoo/${OE_VERSION}/requirements.txt
 sudo pip3 install -r requirements.txt
-# sudo pip3 install Werkzeug==0.16.0
 
 echo -e "\n=========== Installing nodeJS NPM and rtlcss for LTR support =================="
 sudo apt install nodejs npm -y
@@ -110,9 +109,8 @@ sudo npm install -g rtlcss less less-plugin-clean-css
 
 sudo apt install xfonts-75dpi -y
 
-sudo wget https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6-1/wkhtmltox_0.12.6-1.bionic_amd64.deb
-sudo dpkg -i wkhtmltox_0.12.6-1.bionic_amd64.deb
-sudo apt -f install
+wget https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6-1/wkhtmltox_0.12.6-1.bionic_amd64.deb
+sudo apt install ./wkhtmltox_0.12.6-1.bionic_amd64.deb
 sudo cp /usr/local/bin/wkhtmltopdf /usr/bin/
 sudo cp /usr/local/bin/wkhtmltoimage /usr/bin/
 
@@ -133,6 +131,7 @@ sudo git clone --depth 1 --branch $OE_VERSION https://www.github.com/odoo/odoo $
 
 if [ $IS_ENTERPRISE = "True" ]; then
     # Odoo Enterprise install!
+    sudo pip3 install psycopg2-binary pdfminer.six
     echo -e "\n============ Create symlink for node ==============="
     sudo ln -s /usr/bin/nodejs /usr/bin/node
     sudo su $OE_USER -c "mkdir $OE_HOME/enterprise"
@@ -151,7 +150,7 @@ if [ $IS_ENTERPRISE = "True" ]; then
 
     echo -e "\n========= Added Enterprise code under $OE_HOME/enterprise/addons ========="
     echo -e "\n============= Installing Enterprise specific libraries ============"
-    sudo pip3 install num2words ofxparse dbfread ebaysdk firebase_admin pyOpenSSL
+    sudo -H pip3 install num2words ofxparse dbfread ebaysdk firebase_admin pyOpenSSL
     sudo npm install -g less
     sudo npm install -g less-plugin-clean-css
 fi
@@ -253,15 +252,19 @@ server {
     server_name $WEBSITE_NAME;
    
     # Proxy settings
-    proxy_read_timeout 720s;
-    proxy_connect_timeout 720s;
-    proxy_send_timeout 720s;
+    proxy_read_timeout 900s;
+    proxy_connect_timeout 900s;
+    proxy_send_timeout 900s;
    
     # Add Headers for odoo proxy mode
     proxy_set_header X-Forwarded-Host \$host;
     proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
     proxy_set_header X-Forwarded-Proto \$scheme;
     proxy_set_header X-Real-IP \$remote_addr;
+    add_header X-Frame-Options "SAMEORIGIN";
+    add_header X-XSS-Protection "1; mode=block";
+    proxy_set_header X-Client-IP \$remote_addr;
+    proxy_set_header HTTP_X_FORWARDED_HOST \$remote_addr;
    
     # log
     access_log /var/log/nginx/$OE_USER-access.log;
@@ -279,15 +282,21 @@ server {
    
     # Cache static files.
     location ~* /[0-9a-zA-Z_]*/static/ {
-                proxy_cache_valid 200 90m;
+                proxy_cache_valid 200 302 60m;
                 proxy_buffering on;
                 expires 864000;
                 proxy_pass http://odoo;
     }
    
-    # Gzip Compression
-    gzip_types text/css text/scss text/plain text/xml application/xml application/json application/javascript;
+    #   enable data compression
     gzip on;
+    gzip_min_length 1100;
+    gzip_buffers    4   32k;
+    gzip_types  text/css text/less text/plain text/xml application/xml application/json application/javascript application/pdf image/jpeg image/png;
+    gzip_vary on;
+    client_header_buffer_size 4k;
+    large_client_header_buffers 4 64k;
+    client_max_body_size 0;
 }
 EOF
 
