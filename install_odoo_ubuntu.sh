@@ -78,18 +78,19 @@ sudo su - postgres -c "createuser -s $OE_USER" 2> /dev/null || true
 # Install Dependencies
 #--------------------------------------------------
 echo -e "\n=================== Installing Python 3 + pip3 ============================"
-sudo apt install software-properties-common -y
+sudo apt install git build-essential python3 python3-pip python3-dev python3-pillow python3-lxml python3-dateutil python3-venv python3-wheel \
+wget python3-setuptools libfreetype6-dev libpq-dev libxslt-dev libxml2-dev libzip-dev libldap2-dev libsasl2-dev libxslt1-dev node-less gdebi \
+zlib1g-dev libtiff5-dev libjpeg8-dev libopenjp2-7-dev liblcms2-dev libwebp-dev libharfbuzz-dev libfribidi-dev libxcb1-dev fail2ban libssl-dev \
+libjpeg-dev libblas-dev libatlas-base-dev -y
 
-sudo apt-get install build-essential git wget python3 python3-pip python3-dev python3-venv python3-pillow python3-venv \
-python3-wheel libxslt-dev libzip-dev libldap2-dev libsasl2-dev python3-setuptools node-less libpng12-0 libjpeg-dev gdebi -y
-
-sudo apt install libfreetype6-dev libpq-dev libxml2-dev libxslt1-dev zlib1g-dev libtiff5-dev libjpeg8-dev libopenjp2-7-dev \
-liblcms2-dev libwebp-dev libharfbuzz-dev libfribidi-dev libxcb1-dev libssl-dev libblas-dev libatlas-base-dev libffi-dev -y
+sudo -H pip3 install --upgrade pip
+pip3 install Babel decorator docutils ebaysdk feedparser gevent greenlet html2text Jinja2 lxml Mako MarkupSafe mock num2words ofxparse \
+passlib Pillow psutil psycogreen psycopg2 pydot pyparsing PyPDF2 pyserial python-dateutil python-openid pytz pyusb PyYAML qrcode reportlab \
+requests six suds-jurko vatnumber vobject Werkzeug XlsxWriter xlwt xlrd polib
 
 echo -e "\n================== Install python packages/requirements ============================"
 wget https://raw.githubusercontent.com/odoo/odoo/${OE_VERSION}/requirements.txt
 sudo -H pip3 install --upgrade pip
-sudo pip3 install babel PyPDF2 jinja2 psutil decorator passlib
 sudo pip3 install -r requirements.txt
 
 echo -e "\n=========== Installing nodeJS NPM and rtlcss for LTR support =================="
@@ -106,10 +107,10 @@ sudo npm install -g less less-plugin-clean-css
 ## https://github.com/odoo/odoo/wiki/Wkhtmltopdf ):
 ## https://www.odoo.com/documentation/13.0/setup/install.html#debian-ubuntu
 
+sudo apt install software-properties-common -y
 sudo apt install xfonts-75dpi -y
-
 wget https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6-1/wkhtmltox_0.12.6-1.bionic_amd64.deb
-sudo apt install ./wkhtmltox_0.12.6-1.bionic_amd64.deb
+sudo apt install ./wkhtmltox_0.12.6-1.bionic_amd64.deb -y
 sudo cp /usr/local/bin/wkhtmltopdf /usr/bin/
 sudo cp /usr/local/bin/wkhtmltoimage /usr/bin/
 
