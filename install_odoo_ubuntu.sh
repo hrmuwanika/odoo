@@ -307,10 +307,13 @@ fi
 #--------------------------------------------------
 
 if [ $INSTALL_NGINX = "True" ] && [ $ENABLE_SSL = "True" ] && [ $ADMIN_EMAIL != "odoo@example.com" ]  && [ $WEBSITE_NAME != "_" ];then
-  sudo snap install core; sudo snap refresh core
+  sudo snap install core 
+  sudo snap refresh core
   sudo snap install --classic certbot
   sudo ln -s /snap/bin/certbot /usr/bin/certbot
-  sudo certbot --nginx -d $WEBSITE_NAME --noninteractive --agree-tos --email $ADMIN_EMAIL --redirect
+  sudo certbot --nginx --agree-tos --redirect --uir --hsts --staple-ocsp --must-staple -d $WEBSITE_NAME --email $ADMIN_EMAIL
+  # sudo certbot --nginx -d $WEBSITE_NAME --noninteractive --agree-tos --email $ADMIN_EMAIL --redirect
+  
   sudo systemctl reload nginx
   echo "\n============ SSL/HTTPS is enabled! ========================"
 else
