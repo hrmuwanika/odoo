@@ -1,7 +1,7 @@
 #!/bin/bash
 
 ################################################################################
-# Script for installing Odoo on Ubuntu 18.04 LTS (could be used for other version too)
+# Script for installing Odoo on Ubuntu 18.04 and 20.04 LTS (could be used for other version too)
 # Author: Henry Robert Muwanika
 #-------------------------------------------------------------------------------
 # This script will install Odoo on your Ubuntu 18.04 server. It can install multiple Odoo instances
@@ -34,7 +34,7 @@ OE_SUPERADMIN="admin"
 GENERATE_RANDOM_PASSWORD="True"
 OE_CONFIG="${OE_USER}-server"
 # Set the website name
-WEBSITE_NAME="example.com"
+WEBSITE_NAME="_"
 # Set the default Odoo longpolling port (you still have to use -c /etc/odoo-server.conf for example to use this.)
 LONGPOLLING_PORT="8072"
 # Set to "True" to install certbot and have ssl enabled, "False" to use http
@@ -111,8 +111,8 @@ sudo apt install software-properties-common -y
 sudo apt install xfonts-75dpi -y
 wget https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6-1/wkhtmltox_0.12.6-1.bionic_amd64.deb
 sudo apt install ./wkhtmltox_0.12.6-1.bionic_amd64.deb -y
-sudo cp /usr/local/bin/wkhtmltopdf /usr/bin/
-sudo cp /usr/local/bin/wkhtmltoimage /usr/bin/
+sudo ln -s /usr/local/bin/wkhtmltopdf /usr/bin
+sudo ln -s /usr/local/bin/wkhtmltoimage /usr/bin
 
 echo -e "\n============== Create ODOO system user ========================"
 sudo adduser --system --quiet --shell=/bin/bash --home=$OE_HOME --gecos 'ODOO' --group $OE_USER
