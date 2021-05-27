@@ -76,7 +76,7 @@ sudo su - postgres -c "createuser -s $OE_USER" 2> /dev/null || true
 #--------------------------------------------------
 echo -e "\n=================== Installing Python 3 + pip3 ============================"
 sudo apt install git build-essential python3 python3-pip python3-dev python3-pil python3-lxml python3-dateutil python3-venv python3-wheel \
-wget python3-setuptools libfreetype6-dev libpq-dev libxslt1-dev libxml2-dev libzip-dev libldap2-dev libsasl2-dev libxslt1-dev node-less gdebi \
+wget python3-setuptools libfreetype6-dev libpq-dev libxslt-dev libxml2-dev libzip-dev libldap2-dev libsasl2-dev libxslt1-dev node-less gdebi \
 zlib1g-dev libtiff5-dev libjpeg62-turbo-dev libopenjp2-7-dev liblcms2-dev libwebp-dev libharfbuzz-dev libfribidi-dev libxcb1-dev fail2ban libssl-dev \
 libjpeg-dev libblas-dev libatlas-base-dev -y
 
@@ -108,8 +108,8 @@ sudo apt install software-properties-common -y
 sudo apt install xfonts-75dpi -y
 wget https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6-1/wkhtmltox_0.12.6-1.buster_amd64.deb
 sudo apt install ./wkhtmltox_0.12.6-1.buster_amd64.deb -y
-sudo cp /usr/local/bin/wkhtmltopdf /usr/bin/
-sudo cp /usr/local/bin/wkhtmltoimage /usr/bin/
+sudo ln -s /usr/local/bin/wkhtmltopdf /usr/bin
+sudo ln -s /usr/local/bin/wkhtmltoimage /usr/bin
 
 echo -e "\n======== Create ODOO system user =========="
 sudo adduser --system --quiet --shell=/bin/bash --home=$OE_HOME --gecos 'ODOO' --group $OE_USER
