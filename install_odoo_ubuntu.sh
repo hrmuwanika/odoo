@@ -294,7 +294,7 @@ server {
    
     # Cache static files.
     location ~* /[0-9a-zA-Z_]*/static/ {
-                proxy_cache_valid 200 302 60m;
+                proxy_cache_valid 200 90m;
                 proxy_buffering on;
                 expires 864000;
                 proxy_pass http://odoo;
