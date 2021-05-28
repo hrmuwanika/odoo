@@ -81,7 +81,7 @@ echo -e "\n=================== Installing Python 3 + pip3 ======================
 sudo apt install git build-essential python3 python3-pip python3-dev python3-pillow python3-lxml python3-dateutil python3-venv python3-wheel \
 wget python3-setuptools libfreetype6-dev libpq-dev libxslt-dev libxml2-dev libzip-dev libldap2-dev libsasl2-dev libxslt1-dev node-less gdebi \
 zlib1g-dev libtiff5-dev libjpeg8-dev libopenjp2-7-dev liblcms2-dev libwebp-dev libharfbuzz-dev libfribidi-dev libxcb1-dev fail2ban libssl-dev \
-libjpeg-dev libblas-dev libatlas-base-dev -y
+libjpeg-dev libblas-dev libatlas-base-dev libffi-dev -y
 
 sudo -H pip3 install --upgrade pip
 pip3 install Babel decorator docutils ebaysdk feedparser gevent greenlet html2text Jinja2 lxml Mako MarkupSafe mock num2words ofxparse \
