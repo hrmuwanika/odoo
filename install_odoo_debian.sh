@@ -58,6 +58,17 @@ echo -e "\n============= Update Server ================"
 sudo apt update
 sudo apt upgrade -y
 
+#--------------------------------------------------
+# UFW Firewall
+#--------------------------------------------------
+sudo ufw allow "OpenSSH"
+sudo ufw allow 80,443,6010,8069,8072/tcp
+sudo ufw allow 80/tcp
+sudo ufw allow 443/tcp
+sudo ufw allow 6010/tcp
+sudo ufw allow 8069/tcp
+sudo ufw allow 8072/tcp
+
 sudo apt install -y vim
 #### disable vim visual mode in debian Buster ####
 sudo echo "set mouse-=a" >> ~/.vimrc
@@ -78,12 +89,12 @@ echo -e "\n=================== Installing Python 3 + pip3 ======================
 sudo apt install git build-essential python3 python3-pip python3-dev python3-pil python3-lxml python3-dateutil python3-venv python3-wheel \
 wget python3-setuptools libfreetype6-dev libpq-dev libxslt-dev libxml2-dev libzip-dev libldap2-dev libsasl2-dev libxslt1-dev node-less gdebi \
 zlib1g-dev libtiff5-dev libjpeg62-turbo-dev libopenjp2-7-dev liblcms2-dev libwebp-dev libharfbuzz-dev libfribidi-dev libxcb1-dev fail2ban libssl-dev \
-libjpeg-dev libblas-dev libatlas-base-dev -y
+libjpeg-dev libblas-dev libatlas-base-dev libffi-dev libatlas-base-dev libmysqlclient-dev -y
 
 sudo -H pip3 install --upgrade pip
 pip3 install Babel decorator docutils ebaysdk feedparser gevent greenlet html2text Jinja2 lxml Mako MarkupSafe mock num2words ofxparse \
 passlib Pillow psutil psycogreen psycopg2 pydot pyparsing PyPDF2 pyserial python-dateutil python-openid pytz pyusb PyYAML qrcode reportlab \
-requests six suds-jurko vatnumber vobject Werkzeug XlsxWriter xlwt xlrd polib
+requests six suds-jurko vatnumber vobject Werkzeug XlsxWriter xlwt xlrd polib wheel
 
 echo -e "\n================== Install python packages/requirements ============================"
 wget https://raw.githubusercontent.com/odoo/odoo/${OE_VERSION}/requirements.txt
@@ -91,6 +102,7 @@ sudo -H pip3 install --upgrade pip
 sudo pip3 install -r requirements.txt
 
 echo -e "\n=========== Installing nodeJS NPM and rtlcss for LTR support =================="
+sudo curl -sL https://deb.nodesource.com/setup_14.x | sudo -E bash -
 sudo apt install nodejs npm -y
 sudo ln -s /usr/bin/nodejs /usr/bin/node
 sudo npm install -g less less-plugin-clean-css
@@ -203,10 +215,13 @@ After=network.target postgresql.service
 
 [Service]
 Type=simple
+PermissionsStartOnly=true
+SyslogIdentifier=odoo-server
 User=$OE_USER
 Group=$OE_USER
 ExecStart=$OE_HOME_EXT/odoo-bin --config /etc/${OE_CONFIG}.conf  --logfile /var/log/${OE_USER}/${OE_CONFIG}.log
 KillMode=mixed
+StandardOutput=journal+console
 
 [Install]
 WantedBy=multi-user.target
@@ -273,7 +288,7 @@ server {
    
     # Cache static files.
     location ~* /[0-9a-zA-Z_]*/static/ {
-                proxy_cache_valid 200 302 60m;
+                proxy_cache_valid 200 90m;
                 proxy_buffering on;
                 expires 864000;
                 proxy_pass http://odoo;
