@@ -67,8 +67,9 @@ sudo apt autoremove -y
 #--------------------------------------------------
 # UFW Firewall
 #--------------------------------------------------
-sudo ufw allow "OpenSSH"
-sudo ufw allow 80,443,6010,8069,8072/tcp
+sudo apt install -y ufw 
+sudo ufw enable
+sudo ufw allow 22/tcp
 sudo ufw allow 80/tcp
 sudo ufw allow 443/tcp
 sudo ufw allow 6010/tcp
