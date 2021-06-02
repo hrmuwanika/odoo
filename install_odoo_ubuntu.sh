@@ -122,8 +122,8 @@ sudo npm install -g less less-plugin-clean-css
 
 sudo apt install software-properties-common -y
 sudo apt install xfonts-75dpi -y
-wget https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6-1/wkhtmltox_0.12.6-1.bionic_amd64.deb
-sudo apt install ./wkhtmltox_0.12.6-1.bionic_amd64.deb -y
+wget https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6-1/wkhtmltox_0.12.6-1.focal_amd64.deb
+sudo apt install ./wkhtmltox_0.12.6-1.focal_amd64.deb -y
 sudo ln -s /usr/local/bin/wkhtmltopdf /usr/bin
 sudo ln -s /usr/local/bin/wkhtmltoimage /usr/bin
 
