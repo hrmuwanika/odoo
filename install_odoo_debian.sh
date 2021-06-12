@@ -25,7 +25,7 @@ OE_PORT="8069"
 # IMPORTANT! This script contains extra libraries that are specifically needed for Odoo 14.0
 OE_VERSION="14.0"
 # Set this to True if you want to install the Odoo enterprise version!
-IS_ENTERPRISE="True"
+IS_ENTERPRISE="False"
 # Set this to True if you want to install Nginx!
 INSTALL_NGINX="True"
 # Set the superadmin password - if GENERATE_RANDOM_PASSWORD is set to "True" we will automatically generate a random password, otherwise we use this one
@@ -233,10 +233,15 @@ sudo systemctl daemon-reload
 sudo systemctl enable odoo.service
 sudo systemctl start odoo.service
 
-echo -e "\n======== Convert odoo CE to EE ============="
-wget https://raw.githubusercontent.com/hrmuwanika/odoo/master/odoo_ee.sh
-chmod +x odoo_ee.sh
-./odoo_ee.sh
+# echo -e "\n======== Convert odoo CE to EE ============="
+# wget https://raw.githubusercontent.com/hrmuwanika/odoo/master/odoo_ee.sh
+# chmod +x odoo_ee.sh
+# ./odoo_ee.sh
+
+echo -e "\n======== Adding some custom modules ============="
+git clone https://github.com/hrmuwanika/odoo-custom-addons.git
+cd odoo-custom-addons
+cp -rf * /odoo/custom/addons
 
 #--------------------------------------------------
 # Install Nginx if needed
