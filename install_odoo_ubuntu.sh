@@ -1,7 +1,7 @@
 #!/bin/bash
 
 ################################################################################
-# Script for installing Odoo on Ubuntu 18.04 and 20.04 LTS (could be used for other version too)
+# Script for installing Odoo on Ubuntu 18.04 LTS (could be used for other version too)
 # Author: Henry Robert Muwanika
 #-------------------------------------------------------------------------------
 # This script will install Odoo on your Ubuntu 18.04 server. It can install multiple Odoo instances
@@ -25,7 +25,7 @@ OE_PORT="8069"
 # IMPORTANT! This script contains extra libraries that are specifically needed for Odoo 14.0
 OE_VERSION="14.0"
 # Set this to True if you want to install the Odoo enterprise version!
-IS_ENTERPRISE="True"
+IS_ENTERPRISE="False"
 # Set this to True if you want to install Nginx!
 INSTALL_NGINX="True"
 # Set the superadmin password - if GENERATE_RANDOM_PASSWORD is set to "True" we will automatically generate a random password, otherwise we use this one
@@ -122,8 +122,8 @@ sudo npm install -g less less-plugin-clean-css
 
 sudo apt install software-properties-common -y
 sudo apt install xfonts-75dpi -y
-wget https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6-1/wkhtmltox_0.12.6-1.focal_amd64.deb
-sudo apt install ./wkhtmltox_0.12.6-1.focal_amd64.deb -y
+wget https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6-1/wkhtmltox_0.12.6-1.bionic_amd64.deb
+sudo apt install ./wkhtmltox_0.12.6-1.bionic_amd64.deb -y
 sudo ln -s /usr/local/bin/wkhtmltopdf /usr/bin
 sudo ln -s /usr/local/bin/wkhtmltoimage /usr/bin
 
@@ -237,10 +237,15 @@ sudo systemctl daemon-reload
 sudo systemctl enable odoo.service
 sudo systemctl start odoo.service
 
-echo -e "\n======== Convert odoo CE to EE ============="
-wget https://raw.githubusercontent.com/hrmuwanika/odoo/master/odoo_ee.sh
-chmod +x odoo_ee.sh
-./odoo_ee.sh
+# echo -e "\n======== Convert odoo CE to EE ============="
+# wget https://raw.githubusercontent.com/hrmuwanika/odoo/master/odoo_ee.sh
+# chmod +x odoo_ee.sh
+# ./odoo_ee.sh
+
+echo -e "\n======== Adding some custom modules ============="
+git clone https://github.com/hrmuwanika/odoo-custom-addons.git
+cd odoo-custom-addons
+cp -rf * /odoo/custom/addons
 
 #--------------------------------------------------
 # Install Nginx if needed
