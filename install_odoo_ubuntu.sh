@@ -270,6 +270,11 @@ upstream odoochat {
 server {
     listen 80;
     server_name $WEBSITE_NAME;
+    
+    # Proxy settings
+    proxy_read_timeout 720s;
+    proxy_connect_timeout 720s;
+    proxy_send_timeout 720s;
    
     # Add Headers for odoo proxy mode
     proxy_set_header X-Forwarded-Host \$host;
@@ -284,14 +289,6 @@ server {
     # log
     access_log /var/log/nginx/$OE_USER-access.log;
     error_log /var/log/nginx/$OE_USER-error.log;
-    
-    # increase proxy buffer size
-    proxy_buffers   16  64k;
-    proxy_buffer_size   128k;
-    
-    proxy_read_timeout 900s;
-    proxy_connect_timeout 900s;
-    proxy_send_timeout 900s;
     
     # Redirect longpoll requests to odoo longpolling port
       location /longpolling {
