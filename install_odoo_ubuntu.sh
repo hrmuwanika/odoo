@@ -277,14 +277,10 @@ server {
     proxy_send_timeout 720s;
    
     # Add Headers for odoo proxy mode
-    proxy_set_header X-Forwarded-Host \$host;
-    proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
-    proxy_set_header X-Forwarded-Proto \$scheme;
-    proxy_set_header X-Real-IP \$remote_addr;
-    add_header X-Frame-Options "SAMEORIGIN";
-    add_header X-XSS-Protection "1; mode=block";
-    proxy_set_header X-Client-IP \$remote_addr;
-    proxy_set_header HTTP_X_FORWARDED_HOST \$remote_addr;
+    proxy_set_header X-Forwarded-Host $host;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto $scheme;
+    proxy_set_header X-Real-IP $remote_addr;
    
     # log
     access_log /var/log/nginx/$OE_USER-access.log;
