@@ -257,66 +257,59 @@ if [ $INSTALL_NGINX = "True" ]; then
   sudo systemctl enable nginx
   
 cat <<EOF > /etc/nginx/sites-available/odoo
+#odoo server
+upstream odoo {
+    server 127.0.0.1:$OE_PORT;
+}
+upstream odoochat {
+    server 127.0.0.1:$LONGPOLLING_PORT;
+}
+# http to https redirection
 server {
-  listen 80;
-  # set proper server name after domain set
-  server_name $WEBSITE_NAME;
-  # Add Headers for odoo proxy mode
-  proxy_set_header X-Forwarded-Host \$host;
-  proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
-  proxy_set_header X-Forwarded-Proto \$scheme;
-  proxy_set_header X-Real-IP \$remote_addr;
-  add_header X-Frame-Options "SAMEORIGIN";
-  add_header X-XSS-Protection "1; mode=block";
-  proxy_set_header X-Client-IP \$remote_addr;
-  proxy_set_header HTTP_X_FORWARDED_HOST \$remote_addr;
-  #   odoo    log files
-  access_log  /var/log/nginx/$OE_USER-access.log;
-  error_log       /var/log/nginx/$OE_USER-error.log;
-  #   increase    proxy   buffer  size
-  proxy_buffers   16  64k;
-  proxy_buffer_size   128k;
-  proxy_read_timeout 900s;
-  proxy_connect_timeout 900s;
-  proxy_send_timeout 900s;
-  #   force   timeouts    if  the backend dies
-  proxy_next_upstream error   timeout invalid_header  http_500    http_502
-  http_503;
-  types {
-  text/less less;
-  text/scss scss;
-  }
-  #   enable  data    compression
-  gzip    on;
-  gzip_min_length 1100;
-  gzip_buffers    4   32k;
-  gzip_types  text/css text/less text/plain text/xml application/xml application/json application/javascript application/pdf image/jpeg image/png;
-  gzip_vary   on;
-  client_header_buffer_size 4k;
-  large_client_header_buffers 4 64k;
-  client_max_body_size 0;
-  location / {
-  proxy_pass    http://127.0.0.1:$OE_PORT;
-  # by default, do not forward anything
-  proxy_redirect off;
-  }
-  location /longpolling {
-  proxy_pass http://127.0.0.1:$LONGPOLLING_PORT;
-  }
-  location ~* .(js|css|png|jpg|jpeg|gif|ico)$ {
-  expires 2d;
-  proxy_pass http://127.0.0.1:$OE_PORT;
-  add_header Cache-Control "public, no-transform";
-  }
-  # cache some static data in memory for 60mins.
-  location ~ /[a-zA-Z0-9_-]*/static/ {
-  proxy_cache_valid 200 302 60m;
-  proxy_cache_valid 404      1m;
-  proxy_buffering    on;
-  expires 864000;
-  proxy_pass    http://127.0.0.1:$OE_PORT;
-  }
-  }
+    listen 80;
+    listen [::]:80;
+    server_name $WEBSITE_NAME;
+   
+    # Proxy settings
+    proxy_read_timeout 720s;
+    proxy_connect_timeout 720s;
+    proxy_send_timeout 720s;
+   
+    # Add Headers for odoo proxy mode
+    proxy_set_header X-Forwarded-Host \$host;
+    proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto \$scheme;
+    proxy_set_header X-Real-IP \$remote_addr;
+   
+    # log
+    access_log /var/log/nginx/$OE_USER-access.log;
+    error_log /var/log/nginx/$OE_USER-error.log;
+   
+    # Redirect requests to odoo backend server
+    location / {
+                 proxy_redirect off;
+                 proxy_pass http://odoo;
+    }
+   
+    # Redirect longpoll requests to odoo longpolling port
+    location /longpolling {
+                 proxy_pass http://odoochat;
+    }
+   
+    # Cache static files.
+    location ~* /[0-9a-zA-Z_]*/static/ {
+                proxy_cache_valid 200 90m;
+                proxy_buffering on;
+                expires 864000;
+                proxy_pass http://odoo;
+    }
+   
+    # common gzip
+    gzip_types text/css text/scss text/plain text/xml application/xml application/json application/javascript;
+    gzip on;
+    client_max_body_size 0;
+}
+
 EOF
 
   sudo mv ~/odoo /etc/nginx/sites-available/
