@@ -68,7 +68,7 @@ sudo apt autoremove -y
 # UFW Firewall
 #--------------------------------------------------
 sudo apt install -y ufw 
-sudo ufw enable
+sudo ufw enable -y
 sudo ufw allow 22/tcp
 sudo ufw allow 80/tcp
 sudo ufw allow 443/tcp
