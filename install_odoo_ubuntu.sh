@@ -258,13 +258,6 @@ if [ $INSTALL_NGINX = "True" ]; then
   
 cat <<EOF > /etc/nginx/sites-available/odoo
 
-# odoo server
-upstream odoo {
-    server 127.0.0.1:$OE_PORT;
-}
-upstream odoochat {
-    server 127.0.0.1:$LONGPOLLING_PORT;
-}
 # http to https redirection
 server {
     listen 80;
@@ -291,13 +284,13 @@ server {
     
     # Redirect longpoll requests to odoo longpolling port
       location /longpolling {
-                 proxy_pass http://odoochat;
+                 proxy_pass 127.0.0.1:$LONGPOLLING_PORT;
     }
     
     # Redirect requests to odoo backend server
      location / {
                 proxy_redirect off;
-                proxy_pass http://odoo;
+                proxy_pass 127.0.0.1:$OE_PORT;
     }
    
     # cache some static data in memory for 60mins
@@ -306,7 +299,7 @@ server {
                 proxy_cache_valid 404      1m;
                 proxy_buffering on;
                 expires 864000;
-                proxy_pass http://odoo;
+                proxy_pass 127.0.0.1:$OE_PORT;
     }
    
     # common gzip
