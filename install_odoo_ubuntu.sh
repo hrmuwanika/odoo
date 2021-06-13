@@ -107,7 +107,7 @@ sudo pip3 install -r requirements.txt
 
 echo -e "\n=========== Installing nodeJS NPM and rtlcss for LTR support =================="
 sudo curl -sL https://deb.nodesource.com/setup_14.x | sudo -E bash -
-sudo apt install nodejs npm -y
+sudo apt install nodejs -y
 sudo ln -s /usr/bin/nodejs /usr/bin/node
 sudo npm install -g less less-plugin-clean-css
 
