@@ -87,7 +87,7 @@ sudo apt autoremove -y
 echo -e "\n================ Install PostgreSQL Server =========================="
 sudo apt -y install gnupg2
 wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
-echo "deb http://apt.postgresql.org/pub/repos/apt/ `lsb_release -cs`-pgdg main" |sudo tee  /etc/apt/sources.list.d/pgdg.list
+sudo sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt/ focal-pgdg main" >> /etc/apt/sources.list.d/pgdg.list'
 sudo apt update
 sudo apt install postgresql-12 postgresql-client-12 -y
 sudo systemctl start postgresql && sudo systemctl enable postgresql
