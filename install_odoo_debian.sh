@@ -43,13 +43,29 @@ ENABLE_SSL="True"
 ADMIN_EMAIL="odoo@example.com"
 ##
 
+###
 #----------------------------------------------------
 # Disable password authentication
 #----------------------------------------------------
+sudo sed -i 's/#Port 22/Port 578/' /etc/ssh/sshd_config
 sudo sed -i 's/#ChallengeResponseAuthentication yes/ChallengeResponseAuthentication no/' /etc/ssh/sshd_config
 sudo sed -i 's/UsePAM yes/UsePAM no/' /etc/ssh/sshd_config 
 sudo sed -i 's/#PasswordAuthentication yes/PasswordAuthentication no/' /etc/ssh/sshd_config
-sudo service sshd restart
+sudo systemctl restart sshd
+
+#--------------------------------------------------
+# UFW Firewall
+#--------------------------------------------------
+sudo apt install -y ufw 
+sudo ufw allow 578/tcp
+sudo ufw allow 80,443,6010,5432,8069,8072/tcp
+sudo ufw allow 80/tcp
+sudo ufw allow 443/tcp
+sudo ufw allow 6010/tcp
+sudo ufw allow 5432//tcp
+sudo ufw allow 8069/tcp
+sudo ufw allow 8072/tcp
+sudo ufw enable -y
 
 #--------------------------------------------------
 # Update Server
@@ -57,18 +73,7 @@ sudo service sshd restart
 echo -e "\n============= Update Server ================"
 sudo apt update
 sudo apt upgrade -y
-
-#--------------------------------------------------
-# UFW Firewall
-#--------------------------------------------------
-sudo apt install -y ufw 
-sudo ufw enable -y
-sudo ufw allow 22/tcp
-sudo ufw allow 80/tcp
-sudo ufw allow 443/tcp
-sudo ufw allow 6010/tcp
-sudo ufw allow 8069/tcp
-sudo ufw allow 8072/tcp
+sudo apt autoremove -y
 
 sudo apt install -y vim
 #### disable vim visual mode in debian Buster ####
@@ -77,8 +82,12 @@ sudo echo "set mouse-=a" >> ~/.vimrc
 #--------------------------------------------------
 # Install PostgreSQL Server
 #--------------------------------------------------
-sudo apt install -y postgresql 
-sudo systemctl enable postgresql
+sudo apt -y install gnupg2
+wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
+sudo sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt/ buster-pgdg main" >> /etc/apt/sources.list.d/pgdg.list'
+sudo apt update
+sudo apt install -y postgresql-12 postgres-client-12
+sudo systemctl start postgresql && sudo systemctl enable postgresql
 
 echo -e "\n=========== Creating the ODOO PostgreSQL User ================="
 sudo su - postgres -c "createuser -s $OE_USER" 2> /dev/null || true
@@ -90,16 +99,12 @@ echo -e "\n=================== Installing Python 3 + pip3 ======================
 sudo apt install git build-essential python3 python3-pip python3-dev python3-pil python3-lxml python3-dateutil python3-venv python3-wheel \
 wget python3-setuptools libfreetype6-dev libpq-dev libxslt-dev libxml2-dev libzip-dev libldap2-dev libsasl2-dev libxslt1-dev node-less gdebi \
 zlib1g-dev libtiff5-dev libjpeg62-turbo-dev libopenjp2-7-dev liblcms2-dev libwebp-dev libharfbuzz-dev libfribidi-dev libxcb1-dev fail2ban libssl-dev \
-libjpeg-dev libblas-dev libatlas-base-dev libffi-dev libatlas-base-dev default-libmysqlclient-dev -y
-
-sudo -H pip3 install --upgrade pip
-pip3 install Babel decorator docutils ebaysdk feedparser gevent greenlet html2text Jinja2 lxml Mako MarkupSafe mock num2words ofxparse \
-passlib Pillow psutil psycogreen psycopg2 pydot pyparsing PyPDF2 pyserial python-dateutil python-openid pytz pyusb PyYAML qrcode reportlab \
-requests six suds-jurko vatnumber vobject Werkzeug XlsxWriter xlwt xlrd polib wheel
+libjpeg-dev libblas-dev libatlas-base-dev libffi-dev libatlas-base-dev default-libmysqlclient-dev software-properties-common xfonts-75dpi -y
 
 echo -e "\n================== Install python packages/requirements ============================"
 wget https://raw.githubusercontent.com/odoo/odoo/${OE_VERSION}/requirements.txt
 sudo -H pip3 install --upgrade pip
+sudo pip3 install setuptools wheel
 sudo pip3 install -r requirements.txt
 
 echo -e "\n=========== Installing nodeJS NPM and rtlcss for LTR support =================="
@@ -107,18 +112,17 @@ sudo curl -sL https://deb.nodesource.com/setup_14.x | sudo -E bash -
 sudo apt install nodejs -y
 sudo ln -s /usr/bin/nodejs /usr/bin/node
 sudo npm install -g less-plugin-clean-css
+sudo npm install -g rtlcss
 
 #--------------------------------------------------
 # Install Wkhtmltopdf if needed
 #--------------------------------------------------
 ###  WKHTMLTOPDF download links
-## === Debian Buster x64 & x32 === (for other distributions please replace these two links,
+## === Ubuntu Focal x64 === (for other distributions please replace this link,
 ## in order to have correct version of wkhtmltopdf installed, for a danger note refer to
 ## https://github.com/odoo/odoo/wiki/Wkhtmltopdf ):
-## https://www.odoo.com/documentation/13.0/setup/install.html#debian-ubuntu
+## https://www.odoo.com/documentation/14.0/setup/install.html#debian-ubuntu
 
-sudo apt install software-properties-common -y
-sudo apt install xfonts-75dpi -y
 wget https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6-1/wkhtmltox_0.12.6-1.buster_amd64.deb
 sudo apt install ./wkhtmltox_0.12.6-1.buster_amd64.deb -y
 sudo ln -s /usr/local/bin/wkhtmltopdf /usr/bin
@@ -161,7 +165,6 @@ if [ $IS_ENTERPRISE = "True" ]; then
     echo -e "\n======== Added Enterprise code under $OE_HOME/enterprise/addons ==========="
     echo -e "\n========== Installing Enterprise specific libraries ==============="
     sudo pip3 install num2words ofxparse dbfread ebaysdk firebase_admin pyOpenSSL
-    sudo npm install -g less
     sudo npm install -g less-plugin-clean-css
 fi
 
@@ -197,11 +200,6 @@ fi
 sudo chown $OE_USER:$OE_USER /etc/${OE_CONFIG}.conf
 sudo chmod 640 /etc/${OE_CONFIG}.conf
 
-#echo -e "\n============== Create startup file ================="
-#sudo su root -c "echo '#!/bin/sh' >> $OE_HOME_EXT/start.sh"
-#sudo su root -c "echo 'sudo -u $OE_USER $OE_HOME_EXT/odoo-bin --config=/etc/${OE_CONFIG}.conf' >> $OE_HOME_EXT/start.sh"
-#sudo chmod 755 $OE_HOME_EXT/start.sh
-
 #--------------------------------------------------
 # Adding ODOO as a deamon (Systemd)
 #--------------------------------------------------
@@ -226,22 +224,29 @@ StandardOutput=journal+console
 
 [Install]
 WantedBy=multi-user.target
+
 EOF
+
+sudo chmod 755 /lib/systemd/system/odoo.service
+sudo chown root: /lib/systemd/system/odoo.service
 
 echo -e "\n========= Odoo startup File ===================="
 sudo systemctl daemon-reload
 sudo systemctl enable odoo.service
 sudo systemctl start odoo.service
 
-# echo -e "\n======== Convert odoo CE to EE ============="
-# wget https://raw.githubusercontent.com/hrmuwanika/odoo/master/odoo_ee.sh
-# chmod +x odoo_ee.sh
-# ./odoo_ee.sh
-
-echo -e "\n======== Adding some custom modules ============="
-git clone https://github.com/hrmuwanika/odoo-custom-addons.git
-cd odoo-custom-addons
-cp -rf * /odoo/custom/addons
+# echo -e "\n======== Adding Enterprise or custom modules ============="
+if [ $IS_ENTERPRISE = "True" ]; then
+  echo -e "\n======== Adding some enterprise modules ============="
+  wget https://raw.githubusercontent.com/hrmuwanika/odoo/master/odoo_ee.sh
+  chmod +x odoo_ee.sh
+  ./odoo_ee.sh
+else
+  echo -e "\n======== Adding some custom modules ============="
+  git clone https://github.com/hrmuwanika/odoo-custom-addons.git
+  cd odoo-custom-addons
+  cp -rf * /odoo/custom/addons
+fi
 
 #--------------------------------------------------
 # Install Nginx if needed
@@ -254,61 +259,76 @@ if [ $INSTALL_NGINX = "True" ]; then
   
   cat <<EOF > /etc/nginx/sites-available/odoo
 
-#odoo server
+# odoo server
 upstream odoo {
  server 127.0.0.1:8069;
 }
+
 upstream odoochat {
  server 127.0.0.1:8072;
 }
 
-# http to https redirection
 server {
     listen 80;
     server_name $WEBSITE_NAME;
-   
-    # Proxy settings
-    proxy_read_timeout 720s;
-    proxy_connect_timeout 720s;
-    proxy_send_timeout 720s;
-   
-    # Add Headers for odoo proxy mode
-    proxy_set_header X-Forwarded-Host \$host;
-    proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
-    proxy_set_header X-Forwarded-Proto \$scheme;
-    proxy_set_header X-Real-IP \$remote_addr;
-    add_header X-Frame-Options "SAMEORIGIN";
-    add_header X-XSS-Protection "1; mode=block";
-    proxy_set_header X-Client-IP \$remote_addr;
-    proxy_set_header HTTP_X_FORWARDED_HOST \$remote_addr;
-   
-    # log
-    access_log /var/log/nginx/$OE_USER-access.log;
-    error_log /var/log/nginx/$OE_USER-error.log;
-    
-    # Redirect longpoll requests to odoo longpolling port
-      location /longpolling {
-                 proxy_pass http://odoochat;
-    }
-    
-    # Redirect requests to odoo backend server
-     location / {
-                proxy_redirect off;
-                proxy_pass http://odoo;
-    }
-   
-    # cache some static data in memory for 90mins
-    location ~* /web/static/ {
-                proxy_cache_valid 200 90m;
-                proxy_buffering on;
-                expires 864000;
-                proxy_pass http://odoo;
-    }
-                
-    # common gzip
+
+   # Specifies the maximum accepted body size of a client request,
+   # as indicated by the request header Content-Length.
+   client_max_body_size 200m;
+
+   # log
+   access_log /var/log/nginx/$OE_USER-access.log;
+   error_log /var/log/nginx/$OE_USER-error.log;
+
+   # add ssl specific settings
+   keepalive_timeout    90;
+
+   # increase proxy buffer to handle some Odoo web requests
+   proxy_buffers 16 64k;
+   proxy_buffer_size 128k;
+
+   # general proxy settings
+   proxy_next_upstream error timeout invalid_header http_500 http_502 http_503;
+
+   # set headers
+   proxy_set_header Host \$host;
+   proxy_set_header X-Real-IP \$remote_addr;
+   proxy_set_header X-Forward-For \$proxy_add_x_forwarded_for;
+   proxy_set_header Host \$http_x_forwarded_host;
+
+   # Let the Odoo web service know that we’re using HTTPS, otherwise
+   # it will generate URL using http:// and not https://
+   proxy_set_header X-Forwarded-Proto http;
+   proxy_set_header X-Forwarded-Host \$host;
+   proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
+ 
+   # by default, do not forward anything
+   proxy_redirect off;
+   proxy_buffering off;
+
+   # Redirect requests to odoo backend server
+   location / {
+     proxy_pass http://odoo;
+   }
+
+   # Redirect longpoll requests to odoo longpolling port
+   location /longpolling {
+       proxy_pass http://odoochat;
+   }
+
+   # cache some static data in memory for 90mins
+   # under heavy load this should relieve stress on the Odoo web interface a bit.
+   location ~* /web/static/ {
+       proxy_cache_valid 200 90m;
+       proxy_buffering    on;
+       expires 864000;
+       proxy_pass http://odoo;
+  }
+
+  # common gzip
     gzip_types text/css text/scss text/plain text/xml application/xml application/json application/javascript;
     gzip on;
-    }
+}
     
 EOF
 
@@ -343,7 +363,7 @@ else
 fi
 
 echo -e "\n=========== Starting Odoo Service =============="
-sudo su root -c "/etc/init.d/$OE_CONFIG start"
+sudo systemctl status $OE_USER
 echo "\n===================================================================="
 echo "Done! The Odoo server is up and running. Specifications:"
 echo "Port: $OE_PORT"
