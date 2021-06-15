@@ -104,7 +104,7 @@ wget python3-setuptools python3-suds python3-all-dev python3-tk libevent-dev pkg
 libfreetype6-dev libpq-dev libbz2-dev libxml2-dev libzip-dev libldap2-dev libsasl2-dev libxslt1-dev node-less gdebi xfonts-encodings xfonts-utils \
 zlib1g-dev libtiff5-dev libjpeg8-dev libopenjp2-7-dev liblcms2-dev libwebp-dev libharfbuzz-dev libfribidi-dev libxcb1-dev fail2ban libssl-dev \
 libjpeg-dev libblas-dev libatlas-base-dev libffi-dev libmysqlclient-dev fontconfig xfonts-75dpi xfonts-base libfreetype6-dev libxslt-dev \
-software-properties-common libreadline-dev libncurses5-dev libncursesw5-dev tk-dev -y
+software-properties-common libreadline-dev libncurses5-dev libncursesw5-dev tk-dev curl -y
 
 echo -e "\n================== Install python packages/requirements ============================"
 wget https://raw.githubusercontent.com/odoo/odoo/${OE_VERSION}/requirements.txt
@@ -116,7 +116,7 @@ echo -e "\n=========== Installing nodeJS NPM and rtlcss for LTR support ========
 sudo curl -sL https://deb.nodesource.com/setup_14.x | sudo -E bash -
 sudo apt install nodejs -y
 sudo ln -s /usr/bin/nodejs /usr/bin/node
-sudo npm install -g less less-plugin-clean-css
+sudo npm install -g less-plugin-clean-css
 sudo npm install -g rtlcss
 
 #--------------------------------------------------
