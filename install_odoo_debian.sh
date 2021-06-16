@@ -19,6 +19,8 @@ OE_USER="odoo"
 OE_HOME="/$OE_USER"
 OE_HOME_EXT="/$OE_USER/${OE_USER}-server"
 # The default port where this Odoo instance will run under (provided you use the command -c in the terminal)
+# Set to true if you want to install it, false if you don't need it or have it already installed.
+INSTALL_WKHTMLTOPDF="True"
 # Set the default Odoo port (you still have to use -c /etc/odoo-server.conf for example to use this.)
 OE_PORT="8069"
 # Choose the Odoo version which you want to install. For example: 14.0, 13.0 or 12.0. When using 'master' the master version will be installed.
@@ -117,8 +119,10 @@ sudo npm install -g rtlcss
 #--------------------------------------------------
 # Install Wkhtmltopdf if needed
 #--------------------------------------------------
+if [ $INSTALL_WKHTMLTOPDF = "True" ]; then
+  echo -e "\n---- Install wkhtml and place shortcuts on correct place for Odoo 14 ----"
 ###  WKHTMLTOPDF download links
-## === Ubuntu Focal x64 === (for other distributions please replace this link,
+## === Debian Buster x64 === (for other distributions please replace this link,
 ## in order to have correct version of wkhtmltopdf installed, for a danger note refer to
 ## https://github.com/odoo/odoo/wiki/Wkhtmltopdf ):
 ## https://www.odoo.com/documentation/14.0/setup/install.html#debian-ubuntu
@@ -127,6 +131,9 @@ wget https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6-1/wkhtmlt
 sudo apt install ./wkhtmltox_0.12.6-1.buster_amd64.deb -y
 sudo ln -s /usr/local/bin/wkhtmltopdf /usr/bin
 sudo ln -s /usr/local/bin/wkhtmltoimage /usr/bin
+else
+  echo "Wkhtmltopdf isn't installed due to the choice of the user!"
+fi
 
 echo -e "\n======== Create ODOO system user =========="
 sudo adduser --system --quiet --shell=/bin/bash --home=$OE_HOME --gecos 'ODOO' --group $OE_USER
@@ -138,7 +145,7 @@ sudo mkdir /var/log/$OE_USER
 sudo chown $OE_USER:$OE_USER /var/log/$OE_USER
 
 #--------------------------------------------------
-# Install ODOO
+# Install Odoo from source
 #--------------------------------------------------
 echo -e "\n==== Installing ODOO Server ===="
 sudo git clone --depth 1 --branch $OE_VERSION https://www.github.com/odoo/odoo $OE_HOME_EXT/
@@ -239,13 +246,13 @@ sudo systemctl start odoo.service
 if [ $IS_ENTERPRISE = "True" ]; then
   echo -e "\n======== Adding some enterprise modules ============="
   wget https://raw.githubusercontent.com/hrmuwanika/odoo/master/odoo_ee.sh
-  chmod +x odoo_ee.sh
-  ./odoo_ee.sh
+  sudo chmod +x odoo_ee.sh
+  sudo ./odoo_ee.sh
 else
   echo -e "\n======== Adding some custom modules ============="
-  git clone https://github.com/hrmuwanika/odoo-custom-addons.git
+  sudo git clone https://github.com/hrmuwanika/odoo-custom-addons.git
   cd odoo-custom-addons
-  cp -rf * /odoo/custom/addons
+  sudo cp -rf * /odoo/custom/addons
 fi
 
 #--------------------------------------------------
@@ -274,7 +281,7 @@ server {
 
    # Specifies the maximum accepted body size of a client request,
    # as indicated by the request header Content-Length.
-   client_max_body_size 200m;
+   client_max_body_size 300m;
 
    # log
    access_log /var/log/nginx/$OE_USER-access.log;
@@ -335,6 +342,8 @@ EOF
   sudo mv ~/odoo /etc/nginx/sites-available/
   sudo ln -s /etc/nginx/sites-available/odoo /etc/nginx/sites-enabled/odoo
   sudo rm /etc/nginx/sites-enabled/default
+  sudo rm /etc/nginx/sites-available/default
+  
   sudo systemctl reload nginx
   sudo su root -c "printf 'proxy_mode = True\n' >> /etc/${OE_CONFIG}.conf"
   echo "Done! The Nginx server is up and running. Configuration can be found at /etc/nginx/sites-available/odoo"
@@ -346,7 +355,7 @@ fi
 # Enable ssl with certbot
 #--------------------------------------------------
 
-if [ $INSTALL_NGINX = "True" ] && [ $ENABLE_SSL = "True" ] && [ $ADMIN_EMAIL != "odoo@example.com" ]  && [ $WEBSITE_NAME != "_" ];then
+if [ $INSTALL_NGINX = "True" ] && [ $ENABLE_SSL = "True" ] && [ $ADMIN_EMAIL != "odoo@example.com" ]  && [ $WEBSITE_NAME != "example.com" ];then
   sudo apt install snapd -y
   sudo apt-get remove certbot
   
