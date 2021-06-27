@@ -256,9 +256,10 @@ if [ $IS_ENTERPRISE = "True" ]; then
   sudo ./odoo_ee.sh
 else
   echo -e "\n======== Adding some custom modules ============="
+  sudo mkdir /odoo/custom
+  sudo mkdir /odoo/custom/addons
   git clone https://github.com/hrmuwanika/odoo-custom-addons.git
-  cd odoo-custom-addons
-  sudo cp -rf * /odoo/custom/addons
+  sudo cp -rf odoo-custom-addons/* /odoo/custom/addons
 fi
 
 sudo systemctl restart odoo.service
