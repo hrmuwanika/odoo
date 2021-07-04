@@ -84,6 +84,13 @@ sudo apt upgrade -y
 sudo apt autoremove -y
 
 #--------------------------------------------------
+# Set up the timezones
+#--------------------------------------------------
+# set the correct timezone on ubuntu
+timedatectl set-timezone Africa/Kigali
+timedatectl
+
+#--------------------------------------------------
 # Install PostgreSQL Server
 #--------------------------------------------------
 echo -e "\n================ Install PostgreSQL Server =========================="
