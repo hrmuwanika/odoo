@@ -99,7 +99,7 @@ sudo apt -y install vim bash-completion wget
 sudo sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt/ focal-pgdg main" >> /etc/apt/sources.list.d/pgdg.list'
 wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
 sudo apt update && sudo apt upgrade -y
-sudo apt install -y postgresql-13 postgresql-client-13
+sudo apt install -y postgresql postgresql-client
 sudo systemctl start postgresql && sudo systemctl enable postgresql
 
 echo -e "\n=============== Creating the ODOO PostgreSQL User ========================="
