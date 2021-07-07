@@ -84,11 +84,11 @@ sudo echo "set mouse-=a" >> ~/.vimrc
 #--------------------------------------------------
 # Install PostgreSQL Server
 #--------------------------------------------------
-sudo apt -y install gnupg2
-wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
+sudo apt -y install gnupg gnupg2    
 sudo sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt/ buster-pgdg main" >> /etc/apt/sources.list.d/pgdg.list'
+wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
 sudo apt update
-sudo apt install -y postgresql-12 postgresql-client-12
+sudo apt install -y postgresql-13 postgresql-client-13
 sudo systemctl start postgresql && sudo systemctl enable postgresql
 
 echo -e "\n=========== Creating the ODOO PostgreSQL User ================="
