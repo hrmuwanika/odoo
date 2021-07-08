@@ -262,12 +262,6 @@ fi
 #--------------------------------------------------
 if [ $INSTALL_NGINX = "True" ]; then
   echo -e "\n======== Installing and setting up Nginx ========="
-  sudo apt install curl gnupg2 ca-certificates lsb-release
-  sudo sh -c 'echo "deb http://nginx.org/packages/debian `lsb_release -cs` nginx" >> /etc/apt/sources.list.d/nginx.list'
-  curl -o /tmp/nginx_signing.key https://nginx.org/keys/nginx_signing.key
-  gpg --dry-run --quiet --import --import-options import-show /tmp/nginx_signing.key
-  sudo mv /tmp/nginx_signing.key /etc/apt/trusted.gpg.d/nginx_signing.asc
-  sudo apt update
   sudo apt install -y nginx
   sudo systemctl enable nginx
   sudo systemctl start nginx
