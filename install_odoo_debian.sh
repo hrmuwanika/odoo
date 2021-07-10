@@ -102,12 +102,16 @@ echo -e "\n=================== Installing Python 3 + pip3 ======================
 sudo apt install git build-essential python3 python3-pip python3-dev python3-pil python3-lxml python3-dateutil python3-venv python3-wheel \
 wget python3-setuptools libfreetype6-dev libpq-dev libxslt-dev libxml2-dev libzip-dev libldap2-dev libsasl2-dev libxslt1-dev node-less gdebi \
 zlib1g-dev libtiff5-dev libjpeg62-turbo-dev libopenjp2-7-dev liblcms2-dev libwebp-dev libharfbuzz-dev libfribidi-dev libxcb1-dev fail2ban libssl-dev \
-libjpeg-dev libblas-dev libatlas-base-dev libffi-dev libatlas-base-dev default-libmysqlclient-dev software-properties-common xfonts-75dpi -y
+libjpeg-dev libblas-dev libatlas-base-dev libffi-dev libatlas-base-dev default-libmysqlclient-dev software-properties-common xfonts-75dpi curl \
+python3-num2words python3-pdfminer python3-phonenumbers python3-qrcode python3-slugify python3-watchdog python3-xlrd python3-xlwt python3-vobject \
+python3-renderpm ca-certificates -y
 
 echo -e "\n================== Install python packages/requirements ============================"
 wget https://raw.githubusercontent.com/odoo/odoo/${OE_VERSION}/requirements.txt
 sudo -H pip3 install --upgrade pip
 sudo pip3 install setuptools wheel
+sudo pip3 install python-barcode
+sudo pip3 install simplejson
 sudo pip3 install -r requirements.txt
 
 echo -e "\n=========== Installing nodeJS NPM and rtlcss for LTR support =================="
