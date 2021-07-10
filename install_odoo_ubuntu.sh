@@ -60,16 +60,14 @@ sudo systemctl restart sshd
 sudo apt install -y ufw 
 
 sudo ufw allow 'Nginx Full'
+sudo ufw allow 'Nginx HTTP'
+sudo ufw allow 'Nginx HTTPS'
 sudo ufw allow 578/tcp
-sudo ufw allow 80,443,6010,5432,8069,8072/tcp
-sudo ufw allow 80/tcp
-sudo ufw allow 443/tcp
 sudo ufw allow 6010/tcp
 sudo ufw allow 5432//tcp
 sudo ufw allow 8069/tcp
 sudo ufw allow 8072/tcp
 sudo ufw enable -y
-sudo ufw reload
 
 ##
 #--------------------------------------------------
@@ -117,12 +115,15 @@ wget python3-setuptools python3-suds python3-all-dev python3-tk libevent-dev pkg
 libfreetype6-dev libpq-dev libbz2-dev libxml2-dev libzip-dev libldap2-dev libsasl2-dev libxslt1-dev node-less gdebi xfonts-encodings xfonts-utils \
 zlib1g-dev libtiff5-dev libjpeg8-dev libopenjp2-7-dev liblcms2-dev libwebp-dev libharfbuzz-dev libfribidi-dev libxcb1-dev fail2ban libssl-dev \
 libjpeg-dev libblas-dev libatlas-base-dev libffi-dev libmysqlclient-dev fontconfig xfonts-75dpi xfonts-base libfreetype6-dev libxslt-dev \
-software-properties-common libreadline-dev libncurses5-dev libncursesw5-dev tk-dev curl vim -y
+software-properties-common libreadline-dev libncurses5-dev libncursesw5-dev tk-dev curl vim python3-num2words python3-pdfminer python3-phonenumbers \
+python3-qrcode python3-slugify python3-watchdog python3-xlrd python3-xlwt python3-vobject python3-renderpm ca-certificates -y
 
 echo -e "\n================== Install python packages/requirements ============================"
 wget https://raw.githubusercontent.com/odoo/odoo/${OE_VERSION}/requirements.txt
 sudo -H pip3 install --upgrade pip
 sudo pip3 install setuptools wheel
+sudo pip3 install python-barcode
+sudo pip3 install simplejson
 sudo pip3 install -r requirements.txt
 
 echo -e "\n=========== Installing nodeJS NPM and rtlcss for LTR support =================="
