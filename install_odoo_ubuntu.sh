@@ -268,7 +268,7 @@ else
   echo -e "\n======== Adding some custom modules ============="
   sudo mkdir /odoo/custom
   sudo mkdir /odoo/custom/addons
-  git clone https://github.com/hrmuwanika/odoo-custom-addons.git
+  git clone https://github.com/hrmuwanika/odooapps.git
   sudo cp -rf odoo-custom-addons/* /odoo/custom/addons
   chown -R odoo:odoo /odoo/custom/addons
 fi
