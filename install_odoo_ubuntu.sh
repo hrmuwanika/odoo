@@ -263,14 +263,12 @@ if [ $IS_ENTERPRISE = "True" ]; then
   wget https://raw.githubusercontent.com/hrmuwanika/odoo/master/odoo_ee.sh
   sudo chmod +x odoo_ee.sh
   sudo ./odoo_ee.sh
-  chown -R odoo:odoo /odoo/enterprise/addons
+  chown -R $OE_USER:$OE_USER ${OE_HOME}/enterprise/addons
 else
   echo -e "\n======== Adding some custom modules ============="
-  sudo mkdir /odoo/custom
-  sudo mkdir /odoo/custom/addons
   git clone https://github.com/hrmuwanika/odooapps.git
-  sudo cp -rf odooapps/* /odoo/custom/addons
-  chown -R odoo:odoo /odoo/custom/addons
+  sudo cp -rf odooapps/* ${OE_HOME}/custom/addons
+  chown -R $OE_USER:$OE_USER ${OE_HOME}/custom/addons
 fi
 
 sudo systemctl restart odoo.service
