@@ -10,7 +10,7 @@ If you set the parameter ```INSTALL_NGINX``` to ```True``` you should also confi
 
 ##### 1. Download the script:
 ```
-wget https://raw.githubusercontent.com/hrmuwanika/odoo-open-source-installation-script/master/odoo_install.sh
+wget https://raw.githubusercontent.com/hrmuwanika/odoo/master/install_odoo_ubuntu.sh
 ```
 ##### 2. Modify the parameters as you wish.
 There are a few things you can configure, this is the most used list:<br/>
@@ -29,11 +29,11 @@ There are a few things you can configure, this is the most used list:<br/>
 
 #### 3. Make the script executable
 ```
-sudo chmod +x odoo_install.sh
+sudo chmod +x install_odoo_ubuntu.sh
 ```
 ##### 4. Execute the script:
 ```
-sudo ./odoo_install.sh
+sudo ./install_odoo_ubuntu.sh
 ```
 
 The installation should take about 10 minutes to complete and then you will be able to access it from
