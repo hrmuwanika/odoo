@@ -145,9 +145,9 @@ if [ $INSTALL_WKHTMLTOPDF = "True" ]; then
 ## https://www.odoo.com/documentation/14.0/setup/install.html#debian-ubuntu
 
 wget https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6-1/wkhtmltox_0.12.6-1.focal_amd64.deb
-sudo apt install ./wkhtmltox_0.12.6-1.focal_amd64.deb -y
-sudo ln -s /usr/local/bin/wkhtmltopdf /usr/bin
-sudo ln -s /usr/local/bin/wkhtmltoimage /usr/bin
+sudo dpkg -i wkhtmltox_0.12.6-1.focal_amd64.deb 
+sudo ln -s /usr/local/bin/wkhtmltopdf /usr/bin/wkhtmltopdf
+sudo ln -s /usr/local/bin/wkhtmltoimage /usr/bin/wkhtmltoimage
 else
   echo "Wkhtmltopdf isn't installed due to the choice of the user!"
 fi
