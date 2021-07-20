@@ -7,8 +7,8 @@
 cd /usr/src
 systemctl stop odoo.service
 
-mkdir /odoo/enterprise
-mkdir /odoo/enterprise/addons
+mkdir -p /odoo/enterprise
+mkdir -p /odoo/enterprise/addons
 wget https://www.soladrive.com/downloads/enterprise-14.0.tar.gz
 tar -zxvf enterprise-14.0.tar.gz
 cp -rf odoo-14.0*/odoo/addons/* /odoo/enterprise/addons
