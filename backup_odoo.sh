@@ -2,7 +2,7 @@
 
 # Setting Up Automatic Backup for Odoo Instance
 # mkdir -p /opt/script && cd /opt/script
-# wget https: backup_odoo.sh 
+# wget https://raw.githubusercontent.com/hrmuwanika/odoo/master/backup_odoo.sh 
 # sudo chmod +x backup_odoo.sh
 
 # To backup every 4 hours
