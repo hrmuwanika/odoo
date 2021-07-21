@@ -249,13 +249,13 @@ WantedBy=multi-user.target
 
 EOF
 
-sudo chmod 755 /lib/systemd/system/odoo.service
-sudo chown root: /lib/systemd/system/odoo.service
+sudo chmod 755 /lib/systemd/system/$OE_USER.service
+sudo chown root: /lib/systemd/system/$OE_USER.service
 
 echo -e "\n======== Odoo startup File ============="
 sudo systemctl daemon-reload
-sudo systemctl enable odoo.service
-sudo systemctl start odoo.service
+sudo systemctl enable $OE_USER.service
+sudo systemctl start $OE_USER.service
 
 # echo -e "\n======== Adding Enterprise or custom modules ============="
 if [ $IS_ENTERPRISE = "True" ]; then
@@ -271,7 +271,7 @@ else
   chown -R $OE_USER:$OE_USER ${OE_HOME}/custom/addons
 fi
 
-sudo systemctl restart odoo.service
+sudo systemctl restart $OE_USER.service
 
 #--------------------------------------------------
 # Install Nginx if needed
@@ -282,7 +282,7 @@ if [ $INSTALL_NGINX = "True" ]; then
   sudo apt install -y nginx
   sudo systemctl enable nginx
   
-cat <<EOF > /etc/nginx/sites-available/odoo
+cat <<EOF > /etc/nginx/sites-available/$OE_USER
 
 # odoo server
 upstream odoo {
@@ -358,13 +358,13 @@ server {
 EOF
 
   sudo mv ~/odoo /etc/nginx/sites-available/
-  sudo ln -s /etc/nginx/sites-available/odoo /etc/nginx/sites-enabled/odoo
+  sudo ln -s /etc/nginx/sites-available/$OE_USER /etc/nginx/sites-enabled/$OE_USER
   sudo rm /etc/nginx/sites-enabled/default
   sudo rm /etc/nginx/sites-available/default
   
   sudo systemctl reload nginx
   sudo su root -c "printf 'proxy_mode = True\n' >> /etc/${OE_CONFIG}.conf"
-  echo "Done! The Nginx server is up and running. Configuration can be found at /etc/nginx/sites-available/odoo"
+  echo "Done! The Nginx server is up and running. Configuration can be found at /etc/nginx/sites-available/$OE_USER"
 else
   echo "\n===== Nginx isn't installed due to choice of the user! ========"
 fi
@@ -395,9 +395,9 @@ echo "User PostgreSQL: $OE_USER"
 echo "Code location: $OE_USER"
 echo "Addons folder: $OE_USER/$OE_CONFIG/addons/"
 echo "Password superadmin (database): $OE_SUPERADMIN"
-echo "Start Odoo service: sudo systemctl start $OE_CONFIG"
-echo "Stop Odoo service: sudo systemctl stop $OE_CONFIG"
-echo "Restart Odoo service: sudo systemctl restart $OE_CONFIG"
+echo "Start Odoo service: sudo systemctl start $OE_USER"
+echo "Stop Odoo service: sudo systemctl stop $OE_USER"
+echo "Restart Odoo service: sudo systemctl restart $OE_USER"
 if [ $INSTALL_NGINX = "True" ]; then
   echo "Nginx configuration file: /etc/nginx/sites-available/odoo"
 fi
