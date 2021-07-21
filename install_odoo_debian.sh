@@ -217,7 +217,7 @@ sudo chmod 640 /etc/${OE_CONFIG}.conf
 #--------------------------------------------------
 
 echo -e "\n================= Create Odoo systemd file ======================="
-cat <<EOF > /lib/systemd/system/odoo.service
+cat <<EOF > /lib/systemd/system/$OE_USER.service
 
 [Unit]
 Description=Odoo Open Source ERP and CRM
@@ -239,8 +239,8 @@ sudo chown root: /lib/systemd/system/odoo.service
 
 echo -e "\n========= Odoo startup File ===================="
 sudo systemctl daemon-reload
-sudo systemctl enable odoo.service
-sudo systemctl start odoo.service
+sudo systemctl enable $OE_USER.service
+sudo systemctl start $OE_USER.service
 
 # echo -e "\n======== Adding Enterprise or custom modules ============="
 if [ $IS_ENTERPRISE = "True" ]; then
@@ -265,7 +265,7 @@ if [ $INSTALL_NGINX = "True" ]; then
   sudo systemctl enable nginx
   sudo systemctl start nginx
   
-  cat <<EOF > /etc/nginx/sites-available/odoo
+  cat <<EOF > /etc/nginx/sites-available/$OE_USER
 
 # odoo server
 upstream odoo {
@@ -382,8 +382,8 @@ echo "User PostgreSQL: $OE_USER"
 echo "Code location: $OE_USER"
 echo "Addons folder: $OE_USER/$OE_CONFIG/addons/"
 echo "Password superadmin (database): $OE_SUPERADMIN"
-echo "Start Odoo service: sudo systemctl start $OE_CONFIG"
-echo "Stop Odoo service: sudo systemctl stop $OE_CONFIG"
-echo "Restart Odoo service: sudo systemctl restart $OE_CONFIG"
+echo "Start Odoo service: sudo systemctl start $OE_USER"
+echo "Stop Odoo service: sudo systemctl stop $OE_USER"
+echo "Restart Odoo service: sudo systemctl restart $OE_USER"
 echo "\n====================================================================="
 
