@@ -230,7 +230,7 @@ sudo chmod 640 /etc/${OE_CONFIG}.conf
 #--------------------------------------------------
 
 echo -e "\n========== Create Odoo systemd file ==============="
-cat <<EOF > /lib/systemd/system/odoo.service
+cat <<EOF > /lib/systemd/system/$OE_USER.service
 
 [Unit]
 Description=Odoo Open Source ERP and CRM
