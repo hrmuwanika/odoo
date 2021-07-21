@@ -234,8 +234,8 @@ WantedBy=multi-user.target
 
 EOF
 
-sudo chmod 755 /lib/systemd/system/odoo.service
-sudo chown root: /lib/systemd/system/odoo.service
+sudo chmod 755 /lib/systemd/system/$OE_USER.service
+sudo chown root: /lib/systemd/system/$OE_USER.service
 
 echo -e "\n========= Odoo startup File ===================="
 sudo systemctl daemon-reload
@@ -341,13 +341,13 @@ server {
 EOF
 
   sudo mv ~/odoo /etc/nginx/sites-available/
-  sudo ln -s /etc/nginx/sites-available/odoo /etc/nginx/sites-enabled/odoo
+  sudo ln -s /etc/nginx/sites-available/$OE_USER /etc/nginx/sites-enabled/$OE_USER
   sudo rm /etc/nginx/sites-enabled/default
   sudo rm /etc/nginx/sites-available/default
   
   sudo systemctl reload nginx
   sudo su root -c "printf 'proxy_mode = True\n' >> /etc/${OE_CONFIG}.conf"
-  echo "Done! The Nginx server is up and running. Configuration can be found at /etc/nginx/sites-available/odoo"
+  echo "Done! The Nginx server is up and running. Configuration can be found at /etc/nginx/sites-available/$OE_USER"
 else
   echo "Nginx isn't installed due to choice of the user!"
 fi
