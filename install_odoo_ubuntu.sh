@@ -111,13 +111,9 @@ sudo su - postgres -c "createuser -s $OE_USER" 2> /dev/null || true
 # Install Dependencies
 #--------------------------------------------------
 echo -e "\n=================== Installing Python 3 + pip3 ============================"
-sudo apt install git build-essential python3 python3-pip python3-dev python3-pillow python3-dateutil python3-venv python3-wheel \
-wget python3-setuptools python3-suds python3-all-dev python3-tk libevent-dev pkg-config liblcms2-utils tcl8.6-dev tk8.6-dev libyaml-dev \
-libfreetype6-dev libpq-dev libbz2-dev libxml2-dev libzip-dev libldap2-dev libsasl2-dev libxslt1-dev node-less gdebi xfonts-encodings xfonts-utils \
-zlib1g-dev libtiff5-dev libjpeg8-dev libopenjp2-7-dev liblcms2-dev libwebp-dev libharfbuzz-dev libfribidi-dev libxcb1-dev fail2ban libssl-dev \
-libjpeg-dev libblas-dev libatlas-base-dev libffi-dev libmysqlclient-dev fontconfig xfonts-75dpi xfonts-base libfreetype6-dev libxslt-dev \
-software-properties-common libreadline-dev libncurses5-dev libncursesw5-dev tk-dev curl vim python3-num2words python3-pdfminer python3-phonenumbers \
-python3-qrcode python3-slugify python3-watchdog python3-xlrd python3-xlwt python3-vobject python3-renderpm ca-certificates -y
+apt install -y git python3-dev python3-venv build-essential python3-pillow python3-lxml python3-pip python3-setuptools libzip-dev \
+python3-venv python3-wheel libxslt-dev gdebi libldap2-dev libsasl2-dev libxml2-dev libxslt1-dev libjpeg-dev libpq-dev wget node-less \
+fontconfig xfonts-75dpi xfonts-base
 
 sudo add-apt-repository ppa:linuxuprising/libpng12
 sudo apt update
@@ -133,7 +129,7 @@ sudo pip3 install -r requirements.txt
 
 echo -e "\n=========== Installing nodeJS NPM and rtlcss for LTR support =================="
 sudo curl -sL https://deb.nodesource.com/setup_14.x | sudo -E bash -
-sudo apt install nodejs -y
+sudo apt install nodejs npm -y
 sudo npm install -g --upgrade npm
 sudo ln -s /usr/bin/nodejs /usr/bin/node
 sudo npm install -g less-plugin-clean-css
