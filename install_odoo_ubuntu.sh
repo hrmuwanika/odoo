@@ -285,12 +285,12 @@ if [ $INSTALL_NGINX = "True" ]; then
 cat <<EOF > /etc/nginx/sites-available/$OE_USER
 
 # odoo server
-upstream odoo {
- server 127.0.0.1:8069;
+upstream $OE_USER {
+ server 127.0.0.1:$OE_PORT;
 }
 
-upstream odoochat {
- server 127.0.0.1:8072;
+upstream $OE_USERchat {
+ server 127.0.0.1:$LONGPOLLING_PORT;
 }
 
 server {
@@ -333,12 +333,12 @@ server {
 
    # Redirect requests to odoo backend server
    location / {
-     proxy_pass http://odoo;
+     proxy_pass http://$OE_USER;
    }
 
    # Redirect longpoll requests to odoo longpolling port
    location /longpolling {
-       proxy_pass http://odoochat;
+       proxy_pass http://$OE_USERchat;
    }
 
    # cache some static data in memory for 90mins
