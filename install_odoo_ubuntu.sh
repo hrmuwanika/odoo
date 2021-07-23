@@ -347,7 +347,7 @@ server {
        proxy_cache_valid 200 90m;
        proxy_buffering on;
        expires 864000;
-       proxy_pass http://odoo;
+       proxy_pass http://$OE_USER;
   }
 
   # common gzip
