@@ -268,42 +268,33 @@ if [ $INSTALL_NGINX = "True" ]; then
   cat <<EOF > /etc/nginx/sites-available/$OE_USER
 
 # odoo server
-upstream odoo {
- server 127.0.0.1:8069;
+upstream $OE_USER {
+ server 127.0.0.1:$OE_PORT;
 }
-
-upstream odoochat {
- server 127.0.0.1:8072;
+upstream $OE_USERchat {
+ server 127.0.0.1:$LONGPOLLING_PORT;
 }
-
 server {
     listen 80;
     server_name $WEBSITE_NAME;
-
    # Specifies the maximum accepted body size of a client request,
    # as indicated by the request header Content-Length.
    client_max_body_size 300m;
-
    # log
    access_log /var/log/nginx/$OE_USER-access.log;
    error_log /var/log/nginx/$OE_USER-error.log;
-
    # add ssl specific settings
    keepalive_timeout    90;
-
    # increase proxy buffer to handle some Odoo web requests
    proxy_buffers 16 64k;
    proxy_buffer_size 128k;
-
    # force timeouts if the backend dies
    proxy_next_upstream error timeout invalid_header http_500 http_502 http_503 http_504;
-
    # set headers
    proxy_set_header Host \$host;
    proxy_set_header X-Real-IP \$remote_addr;
    proxy_set_header X-Forward-For \$proxy_add_x_forwarded_for;
    proxy_set_header Host \$http_x_forwarded_host;
-
    # Let the Odoo web service know that we’re using HTTPS, otherwise
    # it will generate URL using http:// and not https://
    proxy_set_header X-Forwarded-Proto http;
@@ -313,26 +304,22 @@ server {
    # by default, do not forward anything
    proxy_redirect off;
    proxy_buffering off;
-
    # Redirect requests to odoo backend server
    location / {
-     proxy_pass http://odoo;
+     proxy_pass http://$OE_USER;
    }
-
    # Redirect longpoll requests to odoo longpolling port
    location /longpolling {
-       proxy_pass http://odoochat;
+       proxy_pass http://$OE_USERchat;
    }
-
    # cache some static data in memory for 90mins
    # under heavy load this should relieve stress on the Odoo web interface a bit.
    location ~* /web/static/ {
        proxy_cache_valid 200 90m;
-       proxy_buffering    on;
+       proxy_buffering on;
        expires 864000;
        proxy_pass http://odoo;
   }
-
   # common gzip
     gzip_types text/css text/scss text/plain text/xml application/xml application/json application/javascript;
     gzip on;
