@@ -113,7 +113,7 @@ sudo su - postgres -c "createuser -s $OE_USER" 2> /dev/null || true
 echo -e "\n=================== Installing Python 3 + pip3 ============================"
 apt install -y git python3-dev python3-venv build-essential python3-pillow python3-lxml python3-pip python3-setuptools libzip-dev \
 python3-venv python3-wheel libxslt-dev gdebi libldap2-dev libsasl2-dev libxml2-dev libxslt1-dev libjpeg-dev libpq-dev wget node-less \
-fontconfig xfonts-75dpi xfonts-base
+libfontenc1 xfonts-75dpi xfonts-base xfonts-encodings xfonts-utils
 
 sudo add-apt-repository ppa:linuxuprising/libpng12
 sudo apt update
