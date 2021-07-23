@@ -112,8 +112,8 @@ sudo su - postgres -c "createuser -s $OE_USER" 2> /dev/null || true
 #--------------------------------------------------
 echo -e "\n=================== Installing Python 3 + pip3 ============================"
 apt install -y git python3-dev python3-venv build-essential python3-pillow python3-lxml python3-pip python3-setuptools libzip-dev \
-python3-venv python3-wheel libxslt-dev gdebi libldap2-dev libsasl2-dev libxml2-dev libxslt1-dev libjpeg-dev libpq-dev wget node-less \
-libfontenc1 xfonts-75dpi xfonts-base xfonts-encodings xfonts-utils
+python3-venv python3-wheel libxslt-dev gdebi libldap2-dev libsasl2-dev libxml2-dev libjpeg-dev libpq-dev wget node-less xfonts-base \
+libfontenc1 xfonts-75dpi xfonts-encodings xfonts-utils
 
 sudo add-apt-repository ppa:linuxuprising/libpng12
 sudo apt update
@@ -146,7 +146,7 @@ if [ $INSTALL_WKHTMLTOPDF = "True" ]; then
 ## https://github.com/odoo/odoo/wiki/Wkhtmltopdf ):
 ## https://www.odoo.com/documentation/14.0/setup/install.html#debian-ubuntu
 
-wget https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6-1/wkhtmltox_0.12.6-1.focal_amd64.deb
+wget -O https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6-1/wkhtmltox_0.12.6-1.focal_amd64.deb
 sudo dpkg -i wkhtmltox_0.12.6-1.focal_amd64.deb 
 sudo ln -s /usr/local/bin/wkhtmltopdf /usr/bin/wkhtmltopdf
 sudo ln -s /usr/local/bin/wkhtmltoimage /usr/bin/wkhtmltoimage
@@ -291,7 +291,7 @@ upstream $OE_USER {
  server 127.0.0.1:$OE_PORT;
 }
 
-upstream $OE_USERchat {
+upstream ${OE_USER}chat {
  server 127.0.0.1:$LONGPOLLING_PORT;
 }
 
@@ -340,7 +340,7 @@ server {
 
    # Redirect longpoll requests to odoo longpolling port
    location /longpolling {
-       proxy_pass http://$OE_USERchat;
+       proxy_pass http://${OE_USER}chat;
    }
 
    # cache some static data in memory for 90mins
