@@ -75,10 +75,11 @@ sudo ufw enable -y
 #--------------------------------------------------
 echo -e "\n============== Update Server ======================="
 # universe package is for Ubuntu 18.x
+sudo apt install -y software-properties-common
 sudo add-apt-repository universe
 
 # libpng12-0 dependency for wkhtmltopdf
-sudo add-apt-repository "deb http://mirrors.kernel.org/ubuntu/ xenial main"
+sudo add-apt-repository "deb http://mirrors.kernel.org/ubuntu/ focal main"
 
 sudo apt update 
 sudo apt upgrade -y
@@ -118,6 +119,10 @@ libjpeg-dev libblas-dev libatlas-base-dev libffi-dev libmysqlclient-dev fontconf
 software-properties-common libreadline-dev libncurses5-dev libncursesw5-dev tk-dev curl vim python3-num2words python3-pdfminer python3-phonenumbers \
 python3-qrcode python3-slugify python3-watchdog python3-xlrd python3-xlwt python3-vobject python3-renderpm ca-certificates -y
 
+sudo add-apt-repository ppa:linuxuprising/libpng12
+sudo apt update
+sudo apt install -y libpng12-0
+
 echo -e "\n================== Install python packages/requirements ============================"
 wget https://raw.githubusercontent.com/odoo/odoo/${OE_VERSION}/requirements.txt
 sudo -H pip3 install --upgrade pip
@@ -129,6 +134,7 @@ sudo pip3 install -r requirements.txt
 echo -e "\n=========== Installing nodeJS NPM and rtlcss for LTR support =================="
 sudo curl -sL https://deb.nodesource.com/setup_14.x | sudo -E bash -
 sudo apt install nodejs -y
+sudo npm install -g --upgrade npm
 sudo ln -s /usr/bin/nodejs /usr/bin/node
 sudo npm install -g less-plugin-clean-css
 sudo npm install -g rtlcss
