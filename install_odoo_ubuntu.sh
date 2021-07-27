@@ -121,9 +121,6 @@ sudo apt install -y libpng12-0
 echo -e "\n================== Install python packages/requirements ============================"
 wget https://raw.githubusercontent.com/odoo/odoo/${OE_VERSION}/requirements.txt
 sudo -H pip3 install --upgrade pip
-sudo pip3 install setuptools wheel
-sudo pip3 install python-barcode
-sudo pip3 install simplejson
 sudo pip3 install -r requirements.txt
 
 echo -e "\n=========== Installing nodeJS NPM and rtlcss for LTR support =================="
@@ -145,7 +142,7 @@ if [ $INSTALL_WKHTMLTOPDF = "True" ]; then
 ## https://github.com/odoo/odoo/wiki/Wkhtmltopdf ):
 ## https://www.odoo.com/documentation/14.0/setup/install.html#debian-ubuntu
 
-wget -O https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6-1/wkhtmltox_0.12.6-1.focal_amd64.deb
+wget https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6-1/wkhtmltox_0.12.6-1.focal_amd64.deb
 sudo dpkg -i wkhtmltox_0.12.6-1.focal_amd64.deb 
 sudo ln -s /usr/local/bin/wkhtmltopdf /usr/bin/wkhtmltopdf
 sudo ln -s /usr/local/bin/wkhtmltoimage /usr/bin/wkhtmltoimage
