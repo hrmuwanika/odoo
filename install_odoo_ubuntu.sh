@@ -109,7 +109,7 @@ sudo apt install -y git python3-pip build-essential wget python3-dev python3-ven
 python3-pillow libldap2-dev libsasl2-dev python3-setuptools node-less libjpeg-dev zlib1g-dev libpq-dev libxslt-dev libtiff5-dev libjpeg8-dev \
 libopenjp2-7-dev liblcms2-dev libwebp-dev libharfbuzz-dev libfribidi-dev libxcb1-dev gdebi node-less xfonts-base liblcms2-utils libffi-dev \
 libfontenc1 xfonts-75dpi xfonts-encodings xfonts-utils libevent-dev pkg-config libfreetype6-dev libxslt1-dev libblas-dev libatlas-base-dev \
-libssl-dev libreadline-dev libncurses5-dev libncursesw5-dev libreadline-dev
+libssl-dev libreadline-dev libncurses5-dev libncursesw5-dev libreadline-dev xz-utils tk-dev libbz2-dev
 
 sudo add-apt-repository ppa:linuxuprising/libpng12
 sudo apt update
@@ -117,7 +117,8 @@ sudo apt install -y libpng12-0
 
 echo -e "\n================== Install python packages/requirements ============================"
 wget https://raw.githubusercontent.com/odoo/odoo/${OE_VERSION}/requirements.txt
-sudo python3 -m pip install --upgrade pip
+sudo pip install --upgrade pip
+sudo pip install setuptools wheel
 sudo pip install -r requirements.txt
 
 echo -e "\n=========== Installing nodeJS NPM and rtlcss for LTR support =================="
