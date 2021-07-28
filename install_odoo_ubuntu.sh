@@ -196,7 +196,7 @@ sudo su $OE_USER -c "mkdir $OE_HOME/custom"
 sudo su $OE_USER -c "mkdir $OE_HOME/custom/addons"
 
 echo -e "\n======= Setting permissions on home folder =========="
-sudo chown -R $OE_USER:$OE_USER $OE_HOME/*
+sudo chown -R $OE_USER:$OE_USER $OE_HOME/
 
 echo -e "\n========== Create server config file ============="
 sudo touch /etc/${OE_CONFIG}.conf
@@ -261,12 +261,12 @@ if [ $IS_ENTERPRISE = "True" ]; then
   wget https://raw.githubusercontent.com/hrmuwanika/odoo/master/odoo_ee.sh
   sudo chmod +x odoo_ee.sh
   sudo ./odoo_ee.sh
-  chown -R $OE_USER:$OE_USER ${OE_HOME}/enterprise/addons
+  chown -R $OE_USER:$OE_USER ${OE_HOME}/
 else
   echo -e "\n======== Adding some custom modules ============="
   git clone https://github.com/hrmuwanika/odooapps.git
   sudo cp -rf odooapps/* ${OE_HOME}/custom/addons
-  chown -R $OE_USER:$OE_USER ${OE_HOME}/custom/addons
+  chown -R $OE_USER:$OE_USER ${OE_HOME}/
 fi
 
 sudo systemctl restart $OE_USER.service
