@@ -95,12 +95,7 @@ timedatectl
 # Install PostgreSQL Server
 #--------------------------------------------------
 echo -e "\n================ Install PostgreSQL Server =========================="
-sudo apt -y install gnupg gnupg2
-sudo apt -y install vim bash-completion wget
-sudo sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt/ focal-pgdg main" >> /etc/apt/sources.list.d/pgdg.list'
-wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
-sudo apt update && sudo apt upgrade -y
-sudo apt install -y postgresql postgresql-client
+sudo apt install -y postgresql postgresql-contrib
 sudo systemctl start postgresql && sudo systemctl enable postgresql
 
 echo -e "\n=============== Creating the ODOO PostgreSQL User ========================="
@@ -112,10 +107,9 @@ sudo su - postgres -c "createuser -s $OE_USER" 2> /dev/null || true
 echo -e "\n=================== Installing Python 3 + pip3 ============================"
 sudo apt install -y git python3-pip build-essential wget python3-dev python3-venv python3-wheel libfreetype6-dev libxml2-dev libzip-dev \
 python3-pillow libldap2-dev libsasl2-dev python3-setuptools node-less libjpeg-dev zlib1g-dev libpq-dev libxslt-dev libtiff5-dev libjpeg8-dev \
-libopenjp2-7-dev liblcms2-dev libwebp-dev libharfbuzz-dev libfribidi-dev libxcb1-dev gdebi node-less xfonts-base liblcms2-utils \
-libfontenc1 xfonts-75dpi xfonts-encodings xfonts-utils libevent-dev pkg-config libtiff5-dev libjpeg8-dev libfreetype6-dev
-    
-sudo apt build-dep lxml
+libopenjp2-7-dev liblcms2-dev libwebp-dev libharfbuzz-dev libfribidi-dev libxcb1-dev gdebi node-less xfonts-base liblcms2-utils libffi-dev \
+libfontenc1 xfonts-75dpi xfonts-encodings xfonts-utils libevent-dev pkg-config libfreetype6-dev libxslt1-dev libblas-dev libatlas-base-dev \
+libssl-dev libreadline-dev libncurses5-dev libncursesw5-dev libreadline-dev
 
 sudo add-apt-repository ppa:linuxuprising/libpng12
 sudo apt update
@@ -123,8 +117,8 @@ sudo apt install -y libpng12-0
 
 echo -e "\n================== Install python packages/requirements ============================"
 wget https://raw.githubusercontent.com/odoo/odoo/${OE_VERSION}/requirements.txt
-sudo -H pip3 install --upgrade pip
-sudo pip3 install -r requirements.txt
+sudo python3 -m pip install --upgrade pip
+sudo pip install -r requirements.txt
 
 echo -e "\n=========== Installing nodeJS NPM and rtlcss for LTR support =================="
 sudo curl -sL https://deb.nodesource.com/setup_14.x | sudo -E bash -
