@@ -106,10 +106,10 @@ sudo su - postgres -c "createuser -s $OE_USER" 2> /dev/null || true
 #--------------------------------------------------
 echo -e "\n=================== Installing Python 3 + pip3 ============================"
 sudo apt install -y git python3-pip build-essential wget python3-dev python3-venv python3-wheel libfreetype6-dev libxml2-dev libzip-dev \
-python3-pillow libldap2-dev libsasl2-dev python3-setuptools node-less libjpeg-dev zlib1g-dev libpq-dev libxslt-dev libtiff5-dev libjpeg8-dev \
-libopenjp2-7-dev liblcms2-dev libwebp-dev libharfbuzz-dev libfribidi-dev libxcb1-dev gdebi node-less xfonts-base liblcms2-utils libffi-dev \
-libfontenc1 xfonts-75dpi xfonts-encodings xfonts-utils libevent-dev pkg-config libfreetype6-dev libxslt1-dev libblas-dev libatlas-base-dev \
-libssl-dev libreadline-dev libncurses5-dev libncursesw5-dev libreadline-dev xz-utils tk-dev libbz2-dev curl ccze libxslt1-dev
+python3-pil libldap2-dev libsasl2-dev python3-setuptools node-less libjpeg-dev zlib1g-dev libpq-dev libxslt1-dev libtiff5-dev libjpeg8-dev \
+libopenjp2-7-dev liblcms2-dev libwebp-dev libharfbuzz-dev libfribidi-dev libxcb1-dev gdebi libssl-dev xfonts-base liblcms2-utils libffi-dev \
+libfontenc1 xfonts-75dpi xfonts-encodings xfonts-utils libevent-dev pkg-config libblas-dev libatlas-base-dev libreadline-dev libncursesw5-dev \
+libncurses5-dev xz-utils tk-dev libbz2-dev curl ccze 
 
 sudo add-apt-repository ppa:linuxuprising/libpng12
 sudo apt update
@@ -123,11 +123,11 @@ sudo pip install -r requirements.txt
 
 echo -e "\n=========== Installing nodeJS NPM and rtlcss for LTR support =================="
 sudo curl -sL https://deb.nodesource.com/setup_14.x | sudo -E bash -
-sudo apt install nodejs npm -y
+sudo apt install nodejs -y
 sudo npm install -g --upgrade npm
 sudo ln -s /usr/bin/nodejs /usr/bin/node
 sudo npm install -g less-plugin-clean-css less
-sudo npm install -g rtlcss
+sudo npm install -g rtlcss node-gyp
 
 #--------------------------------------------------
 # Install Wkhtmltopdf if needed
