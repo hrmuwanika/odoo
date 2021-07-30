@@ -95,7 +95,10 @@ timedatectl
 # Install PostgreSQL Server
 #--------------------------------------------------
 echo -e "\n================ Install PostgreSQL Server =========================="
-sudo apt install -y postgresql postgresql-contrib
+echo "deb http://apt.postgresql.org/pub/repos/apt/ $(lsb_release -cs)-pgdg main" | sudo tee  /etc/apt/sources.list.d/pgdg.list
+wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
+sudo apt update
+sudo apt install -y postgresql postgresql-client
 sudo systemctl start postgresql && sudo systemctl enable postgresql
 
 echo -e "\n=============== Creating the ODOO PostgreSQL User ========================="
@@ -117,9 +120,9 @@ sudo apt install -y libpng12-0
 
 echo -e "\n================== Install python packages/requirements ============================"
 wget https://raw.githubusercontent.com/odoo/odoo/${OE_VERSION}/requirements.txt
-sudo pip install --upgrade pip==21.1.1
-sudo pip install setuptools wheel
-sudo pip install -r requirements.txt
+sudo pip3 install --upgrade pip==21.1.1
+sudo pip3 install setuptools wheel
+sudo pip3 install -r requirements.txt
 
 echo -e "\n=========== Installing nodeJS NPM and rtlcss for LTR support =================="
 sudo curl -sL https://deb.nodesource.com/setup_14.x | sudo -E bash -
