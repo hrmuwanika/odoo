@@ -73,7 +73,7 @@ sudo ufw enable -y
 # Update Server
 #--------------------------------------------------
 echo -e "\n============== Update Server ======================="
-# universe package is for Ubuntu 18.x
+# universe package is for Ubuntu 20.x
 sudo apt install -y software-properties-common
 sudo add-apt-repository universe
 
@@ -117,7 +117,7 @@ sudo apt install -y libpng12-0
 
 echo -e "\n================== Install python packages/requirements ============================"
 wget https://raw.githubusercontent.com/odoo/odoo/${OE_VERSION}/requirements.txt
-sudo pip install --upgrade pip
+sudo pip install --upgrade pip==21.1.1
 sudo pip install setuptools wheel
 sudo pip install -r requirements.txt
 
@@ -126,7 +126,7 @@ sudo curl -sL https://deb.nodesource.com/setup_14.x | sudo -E bash -
 sudo apt install nodejs -y
 sudo npm install -g --upgrade npm
 sudo ln -s /usr/bin/nodejs /usr/bin/node
-sudo npm install -g less-plugin-clean-css less
+sudo npm install -g less-plugin-clean-css
 sudo npm install -g rtlcss node-gyp
 
 #--------------------------------------------------
