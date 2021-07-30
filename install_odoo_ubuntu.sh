@@ -255,10 +255,15 @@ sudo systemctl start $OE_USER.service
 
 # echo -e "\n======== Adding Enterprise or custom modules ============="
 if [ $IS_ENTERPRISE = "True" ]; then
+  #### upgrade odoo community to enterprise edition ####
+  # Odoo 13: https://www.soladrive.com/downloads/enterprise-13.0.tar.gz
+  # Odoo 14: https://www.soladrive.com/downloads/enterprise-14.0.tar.gz
+  
   echo -e "\n======== Adding some enterprise modules ============="
-  wget https://raw.githubusercontent.com/hrmuwanika/odoo/master/odoo_ee.sh
-  sudo chmod +x odoo_ee.sh
-  sudo ./odoo_ee.sh
+  wget https://www.soladrive.com/downloads/enterprise-14.0.tar.gz
+  tar -zxvf enterprise-14.0.tar.gz
+  cp -rf odoo-14.0*/odoo/addons/* ${OE_HOME}/enterprise/addons
+  rm enterprise-14.0.tar.gz
   chown -R $OE_USER:$OE_USER ${OE_HOME}/
 else
   echo -e "\n======== Adding some custom modules ============="
