@@ -7,6 +7,8 @@
 # This script will install Odoo on your Ubuntu 20.04 server. It can install multiple Odoo instances
 # in one Ubuntu because of the different xmlrpc_ports
 #-------------------------------------------------------------------------------
+# crontab -e
+# 43 6 * * * certbot renew --post-hook "systemctl reload nginx"
 # Make a new file:
 # sudo nano install_odoo_ubuntu.sh
 # Place this content in it and then make the file executable:
