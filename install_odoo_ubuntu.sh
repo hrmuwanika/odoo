@@ -53,21 +53,6 @@ sudo sed -i 's/UsePAM yes/UsePAM no/' /etc/ssh/sshd_config
 sudo sed -i 's/#PasswordAuthentication yes/PasswordAuthentication no/' /etc/ssh/sshd_config
 sudo systemctl restart sshd
 
-#--------------------------------------------------
-# UFW Firewall
-#--------------------------------------------------
-sudo apt install -y ufw 
-
-sudo ufw allow 'Nginx Full'
-sudo ufw allow 'Nginx HTTP'
-sudo ufw allow 'Nginx HTTPS'
-sudo ufw allow 22/tcp
-sudo ufw allow 6010/tcp
-sudo ufw allow 5432//tcp
-sudo ufw allow 8069/tcp
-sudo ufw allow 8072/tcp
-sudo ufw enable -y
-
 ##
 #--------------------------------------------------
 # Update Server
@@ -401,6 +386,21 @@ else
   echo "\n==== SSL/HTTPS isn't enabled due to choice of the user or because of a misconfiguration! ======"
 fi
 
+#--------------------------------------------------
+# UFW Firewall
+#--------------------------------------------------
+sudo apt install -y ufw 
+
+sudo ufw allow 'Nginx Full'
+sudo ufw allow 'Nginx HTTP'
+sudo ufw allow 'Nginx HTTPS'
+sudo ufw allow 22/tcp
+sudo ufw allow 6010/tcp
+sudo ufw allow 5432//tcp
+sudo ufw allow 8069/tcp
+sudo ufw allow 8072/tcp
+sudo ufw enable -y
+
 echo -e "\n================== Status of Odoo Service ============================="
 sudo systemctl status $OE_USER
 echo "\n========================================================================="
@@ -418,4 +418,3 @@ if [ $INSTALL_NGINX = "True" ]; then
   echo "Nginx configuration file: /etc/nginx/sites-available/$OE_USER"
 fi
 echo -e "\n========================================================================="
-
