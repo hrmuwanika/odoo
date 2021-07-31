@@ -400,7 +400,7 @@ sudo ufw allow 6010/tcp
 sudo ufw allow 5432//tcp
 sudo ufw allow 8069/tcp
 sudo ufw allow 8072/tcp
-sudo ufw enable -y
+sudo ufw enable 
 
 echo -e "\n================== Status of Odoo Service ============================="
 sudo systemctl status $OE_USER
