@@ -83,7 +83,7 @@ echo -e "\n================ Install PostgreSQL Server ==========================
 echo "deb http://apt.postgresql.org/pub/repos/apt/ $(lsb_release -cs)-pgdg main" | sudo tee  /etc/apt/sources.list.d/pgdg.list
 wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
 sudo apt update
-sudo apt install -y postgresql postgresql-client
+sudo apt install -y postgresql postgresql-contrib
 sudo systemctl start postgresql && sudo systemctl enable postgresql
 
 echo -e "\n=============== Creating the ODOO PostgreSQL User ========================="
@@ -126,10 +126,11 @@ if [ $INSTALL_WKHTMLTOPDF = "True" ]; then
 ## in order to have correct version of wkhtmltopdf installed, for a danger note refer to
 ## https://github.com/odoo/odoo/wiki/Wkhtmltopdf ):
 ## https://www.odoo.com/documentation/14.0/setup/install.html#debian-ubuntu
+
 WKHTMLTOX_X64=https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6-1/wkhtmltox_0.12.6-1.focal_amd64.deb
 WKHTMLTOX_X32=https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6-1/wkhtmltox_0.12.6-1.focal_i386.deb
 
-echo -e "\n---- Install wkhtml and place shortcuts on correct place for ODOO 9 ----"
+echo -e "\n---- Install wkhtml and place shortcuts on correct place for ODOO 14 ----"
   #pick up correct one from x64 & x32 versions:
   if [ "`getconf LONG_BIT`" == "64" ];then
       _url=$WKHTMLTOX_X64
@@ -137,7 +138,7 @@ echo -e "\n---- Install wkhtml and place shortcuts on correct place for ODOO 9 -
       _url=$WKHTMLTOX_X32
   fi
   sudo wget $_url
-  sudo dpkg -i wkhtmltox_0.12.6-1.focal_amd64.deb 
+  sudo gdebi --n `basename $_url` 
   sudo ln -s /usr/local/bin/wkhtmltopdf /usr/bin
   sudo ln -s /usr/local/bin/wkhtmltoimage /usr/bin
    else
