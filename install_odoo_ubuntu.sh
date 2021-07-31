@@ -112,7 +112,7 @@ sudo apt install -y git python3-pip build-essential wget python3-dev python3-ven
 python3-pil libldap2-dev libsasl2-dev python3-setuptools node-less libjpeg-dev zlib1g-dev libpq-dev libxslt1-dev libtiff5-dev libjpeg8-dev \
 libopenjp2-7-dev liblcms2-dev libwebp-dev libharfbuzz-dev libfribidi-dev libxcb1-dev gdebi libssl-dev xfonts-base liblcms2-utils libffi-dev \
 libfontenc1 xfonts-75dpi xfonts-encodings xfonts-utils libevent-dev pkg-config libblas-dev libatlas-base-dev libreadline-dev libncursesw5-dev \
-libncurses5-dev xz-utils tk-dev libbz2-dev curl ccze 
+libncurses5-dev xz-utils tk-dev libbz2-dev curl ccze nano
 
 sudo add-apt-repository ppa:linuxuprising/libpng12
 sudo apt update
@@ -136,21 +136,29 @@ sudo npm install -g rtlcss node-gyp
 # Install Wkhtmltopdf if needed
 #--------------------------------------------------
 if [ $INSTALL_WKHTMLTOPDF = "True" ]; then
-  echo -e "\n---- Install wkhtml and place shortcuts on correct place for Odoo 14 ----"
 ###  WKHTMLTOPDF download links
 ## === Ubuntu Focal x64 === (for other distributions please replace this link,
 ## in order to have correct version of wkhtmltopdf installed, for a danger note refer to
 ## https://github.com/odoo/odoo/wiki/Wkhtmltopdf ):
 ## https://www.odoo.com/documentation/14.0/setup/install.html#debian-ubuntu
+WKHTMLTOX_X64=https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6-1/wkhtmltox_0.12.6-1.focal_amd64.deb
+WKHTMLTOX_X32=https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6-1/wkhtmltox_0.12.6-1.focal_i386.deb
 
-wget https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6-1/wkhtmltox_0.12.6-1.focal_amd64.deb
-sudo dpkg -i wkhtmltox_0.12.6-1.focal_amd64.deb 
-sudo ln -s /usr/local/bin/wkhtmltopdf /usr/bin/wkhtmltopdf
-sudo ln -s /usr/local/bin/wkhtmltoimage /usr/bin/wkhtmltoimage
-else
+echo -e "\n---- Install wkhtml and place shortcuts on correct place for ODOO 9 ----"
+  #pick up correct one from x64 & x32 versions:
+  if [ "`getconf LONG_BIT`" == "64" ];then
+      _url=$WKHTMLTOX_X64
+  else
+      _url=$WKHTMLTOX_X32
+  fi
+  sudo wget $_url
+  sudo dpkg -i wkhtmltox_0.12.6-1.focal_amd64.deb 
+  sudo ln -s /usr/local/bin/wkhtmltopdf /usr/bin
+  sudo ln -s /usr/local/bin/wkhtmltoimage /usr/bin
+   else
   echo "Wkhtmltopdf isn't installed due to the choice of the user!"
-fi
-
+  fi
+  
 echo -e "\n============== Create ODOO system user ========================"
 sudo adduser --system --quiet --shell=/bin/bash --home=$OE_HOME --gecos 'ODOO' --group $OE_USER
 
@@ -303,7 +311,7 @@ server {
 
    # Specifies the maximum accepted body size of a client request,
    # as indicated by the request header Content-Length.
-   client_max_body_size 300m;
+   client_max_body_size 0;
 
    # log
    access_log /var/log/nginx/$OE_USER-access.log;
@@ -316,6 +324,10 @@ server {
    proxy_buffers 16 64k;
    proxy_buffer_size 128k;
 
+   proxy_read_timeout 900s;
+   proxy_connect_timeout 900s;
+   proxy_send_timeout 900s;
+  
    # force timeouts if the backend dies
    proxy_next_upstream error timeout invalid_header http_500 http_502 http_503 http_504;
 
