@@ -27,7 +27,7 @@ INSTALL_WKHTMLTOPDF="True"
 OE_PORT="8069"
 # Choose the Odoo version which you want to install. For example: 14.0, 13.0 or 12.0. When using 'master' the master version will be installed.
 # IMPORTANT! This script contains extra libraries that are specifically needed for Odoo 14.0
-OE_VERSION="14.0"
+OE_VERSION="15.0"
 # Set this to True if you want to install the Odoo enterprise version!
 IS_ENTERPRISE="False"
 # Set this to True if you want to install Nginx!
@@ -252,25 +252,6 @@ sudo systemctl daemon-reload
 sudo systemctl enable $OE_USER.service
 sudo systemctl start $OE_USER.service
 
-# echo -e "\n======== Adding Enterprise or custom modules ============="
-if [ $IS_ENTERPRISE = "True" ]; then
-  #### upgrade odoo community to enterprise edition ####
-  # Odoo 13: https://www.soladrive.com/downloads/enterprise-13.0.tar.gz
-  # Odoo 14: https://www.soladrive.com/downloads/enterprise-14.0.tar.gz
-  
-  echo -e "\n======== Adding some enterprise modules ============="
-  wget https://www.soladrive.com/downloads/enterprise-14.0.tar.gz
-  tar -zxvf enterprise-14.0.tar.gz
-  cp -rf odoo-14.0*/odoo/addons/* ${OE_HOME}/enterprise/addons
-  rm enterprise-14.0.tar.gz
-  chown -R $OE_USER:$OE_USER ${OE_HOME}/
-else
-  echo -e "\n======== Adding some custom modules ============="
-  git clone https://github.com/hrmuwanika/odooapps.git
-  sudo cp -rf odooapps/* ${OE_HOME}/custom/addons
-  chown -R $OE_USER:$OE_USER ${OE_HOME}/
-fi
-
 sudo systemctl restart $OE_USER.service
 
 #--------------------------------------------------
@@ -399,7 +380,7 @@ sudo ufw allow 'Nginx HTTP'
 sudo ufw allow 'Nginx HTTPS'
 sudo ufw allow 22/tcp
 sudo ufw allow 6010/tcp
-sudo ufw allow 5432//tcp
+#sudo ufw allow 5432//tcp
 sudo ufw allow 8069/tcp
 sudo ufw allow 8072/tcp
 sudo ufw enable 
