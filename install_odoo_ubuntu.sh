@@ -85,7 +85,7 @@ echo -e "\n================ Install PostgreSQL Server ==========================
 echo "deb http://apt.postgresql.org/pub/repos/apt/ $(lsb_release -cs)-pgdg main" | sudo tee  /etc/apt/sources.list.d/pgdg.list
 wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
 sudo apt update
-sudo apt install -y postgresql postgresql-contrib
+sudo apt install -y postgresql
 sudo systemctl start postgresql && sudo systemctl enable postgresql
 
 echo -e "\n=============== Creating the ODOO PostgreSQL User ========================="
@@ -95,11 +95,11 @@ sudo su - postgres -c "createuser -s $OE_USER" 2> /dev/null || true
 # Install Dependencies
 #--------------------------------------------------
 echo -e "\n=================== Installing Python 3 + pip3 ============================"
-sudo apt install -y git python3-pip build-essential wget python3-dev python3-venv python3-wheel libfreetype6-dev libxml2-dev libzip-dev \
+sudo apt install -y git python3 python3-pip build-essential wget python3-dev python3-venv python3-wheel libfreetype6-dev libxml2-dev libzip-dev \
 python3-pil libldap2-dev libsasl2-dev python3-setuptools node-less libjpeg-dev zlib1g-dev libpq-dev libxslt1-dev libtiff5-dev libjpeg8-dev \
 libopenjp2-7-dev liblcms2-dev libwebp-dev libharfbuzz-dev libfribidi-dev libxcb1-dev gdebi libssl-dev xfonts-base liblcms2-utils libffi-dev \
 libfontenc1 xfonts-75dpi xfonts-encodings xfonts-utils libevent-dev pkg-config libblas-dev libatlas-base-dev libreadline-dev libncursesw5-dev \
-libncurses5-dev xz-utils tk-dev libbz2-dev curl ccze nano
+libncurses5-dev xz-utils tk-dev libbz2-dev curl ccze nano libxslt-dev python-dev bash-completion python-openssl liblzma-dev libssl-dev
 
 sudo add-apt-repository ppa:linuxuprising/libpng12
 sudo apt update
@@ -107,7 +107,7 @@ sudo apt install -y libpng12-0
 
 echo -e "\n================== Install python packages/requirements ============================"
 wget https://raw.githubusercontent.com/odoo/odoo/${OE_VERSION}/requirements.txt
-sudo pip3 install --upgrade pip==21.1.1
+sudo pip3 install --upgrade pip
 sudo pip3 install setuptools wheel
 sudo pip3 install -r requirements.txt
 
@@ -127,20 +127,11 @@ if [ $INSTALL_WKHTMLTOPDF = "True" ]; then
 ## === Ubuntu Focal x64 === (for other distributions please replace this link,
 ## in order to have correct version of wkhtmltopdf installed, for a danger note refer to
 ## https://github.com/odoo/odoo/wiki/Wkhtmltopdf ):
-## https://www.odoo.com/documentation/14.0/setup/install.html#debian-ubuntu
+## https://www.odoo.com/documentation/15.0/setup/install.html#debian-ubuntu
 
-WKHTMLTOX_X64=https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6-1/wkhtmltox_0.12.6-1.focal_amd64.deb
-WKHTMLTOX_X32=https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6-1/wkhtmltox_0.12.6-1.focal_i386.deb
-
-echo -e "\n---- Install wkhtml and place shortcuts on correct place for ODOO 14 ----"
-  #pick up correct one from x64 & x32 versions:
-  if [ "`getconf LONG_BIT`" == "64" ];then
-      _url=$WKHTMLTOX_X64
-  else
-      _url=$WKHTMLTOX_X32
-  fi
-  sudo wget $_url
-  sudo gdebi --n `basename $_url` 
+  sudo wget https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6-1/wkhtmltox_0.12.6-1.focal_amd64.deb
+  sudo dpkg -i wkhtmltox_0.12.6-1.focal_amd64.deb
+  sudo apt install -f
   sudo ln -s /usr/local/bin/wkhtmltopdf /usr/bin
   sudo ln -s /usr/local/bin/wkhtmltoimage /usr/bin
    else
@@ -155,7 +146,7 @@ sudo adduser $OE_USER sudo
 
 echo -e "\n=========== Create Log directory ================"
 sudo mkdir /var/log/$OE_USER
-sudo chown $OE_USER:$OE_USER /var/log/$OE_USER
+sudo chown -R $OE_USER:$OE_USER /var/log/$OE_USER
 
 #--------------------------------------------------
 # Install Odoo from source
