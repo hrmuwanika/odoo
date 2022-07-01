@@ -92,14 +92,23 @@ echo -e "\n=============== Creating the ODOO PostgreSQL User ===================
 sudo su - postgres -c "createuser -s $OE_USER" 2> /dev/null || true
 
 #--------------------------------------------------
-# Install Dependencies
+# Install Python Dependencies
 #--------------------------------------------------
-echo -e "\n=================== Installing Python 3 + pip3 ============================"
-sudo apt install -y git python3 python3-pip build-essential wget python3-dev python3-venv python3-wheel libfreetype6-dev libxml2-dev libzip-dev \
-python3-pil libldap2-dev libsasl2-dev python3-setuptools node-less libjpeg-dev zlib1g-dev libpq-dev libxslt1-dev libtiff5-dev libjpeg8-dev \
-libopenjp2-7-dev liblcms2-dev libwebp-dev libharfbuzz-dev libfribidi-dev libxcb1-dev gdebi libssl-dev xfonts-base liblcms2-utils libffi-dev \
-libfontenc1 xfonts-75dpi xfonts-encodings xfonts-utils libevent-dev pkg-config libblas-dev libatlas-base-dev libreadline-dev libncursesw5-dev \
-libncurses5-dev xz-utils tk-dev libbz2-dev curl ccze nano libxslt-dev python-dev bash-completion python-openssl liblzma-dev libssl-dev
+echo -e "\n=================== Installing Python Dependencies ============================"
+sudo apt install -y git python3 python3-pip build-essential wget python-dev python3-dev python3-venv python3-wheel libxslt-dev \
+libzip-dev libldap2-dev libsasl2-dev python3-setuptools node-less libjpeg-dev gdebi 
+
+#--------------------------------------------------
+# Install Python pip Dependencies
+#--------------------------------------------------
+echo -e "\n=================== Installing Python pip Dependencies ============================"
+sudo apt install -y libpq-dev python-dev libxml2-dev libxslt1-dev libldap2-dev libsasl2-dev libffi-dev
+
+echo -e "\n================== Install Wkhtmltopdf ============================================="
+sudo apt install -y xfonts-75dpi xfonts-encodings xfonts-utils xfonts-base
+
+sudo apt install -y libfreetype6-dev libzip-dev libldap2-dev zlib1g-dev libblas-dev libatlas-base-dev libtiff5-dev libjpeg8-dev \
+libopenjp2-7-dev liblcms2-dev liblcms2-utils libwebp-dev libharfbuzz-dev libfribidi-dev libxcb1-dev libssl-dev
 
 sudo add-apt-repository ppa:linuxuprising/libpng12
 sudo apt update
@@ -113,7 +122,7 @@ sudo pip3 install -r requirements.txt
 
 echo -e "\n=========== Installing nodeJS NPM and rtlcss for LTR support =================="
 sudo curl -sL https://deb.nodesource.com/setup_14.x | sudo -E bash -
-sudo apt install nodejs -y
+sudo apt install -y nodejs -y
 sudo npm install -g --upgrade npm
 sudo ln -s /usr/bin/nodejs /usr/bin/node
 sudo npm install -g less-plugin-clean-css
@@ -130,8 +139,7 @@ if [ $INSTALL_WKHTMLTOPDF = "True" ]; then
 ## https://www.odoo.com/documentation/15.0/setup/install.html#debian-ubuntu
 
   sudo wget https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6-1/wkhtmltox_0.12.6-1.focal_amd64.deb
-  sudo dpkg -i wkhtmltox_0.12.6-1.focal_amd64.deb
-  sudo apt install -f
+  sudo apt install ./wkhtmltox_0.12.6-1.focal_amd64.deb
   sudo ln -s /usr/local/bin/wkhtmltopdf /usr/bin
   sudo ln -s /usr/local/bin/wkhtmltoimage /usr/bin
    else
