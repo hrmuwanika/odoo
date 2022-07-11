@@ -311,21 +311,15 @@ server {
    proxy_connect_timeout 720s;
    proxy_send_timeout 720s;
   
-   # force timeouts if the backend dies
-   proxy_next_upstream error timeout invalid_header http_500 http_502 http_503 http_504;
-
    # Add Headers for odoo proxy mode
    proxy_set_header Host \$host;
    proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
    proxy_set_header X-Forwarded-Proto \$scheme;
    proxy_set_header X-Real-IP \$remote_addr;
 
-   # by default, do not forward anything
-   proxy_redirect off;
-   proxy_buffering off;
-
    # Redirect requests to odoo backend server
    location / {
+     proxy_redirect off;
      proxy_pass http://$OE_USER;
    }
 
