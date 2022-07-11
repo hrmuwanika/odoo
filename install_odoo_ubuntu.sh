@@ -95,20 +95,20 @@ sudo su - postgres -c "createuser -s $OE_USER" 2> /dev/null || true
 # Install Python Dependencies
 #--------------------------------------------------
 echo -e "\n=================== Installing Python Dependencies ============================"
-sudo apt install -y git python3 python3-pip build-essential wget python-dev python3-dev python3-venv python3-wheel libxslt-dev \
-libzip-dev libldap2-dev libsasl2-dev python3-setuptools node-less libjpeg-dev gdebi 
+sudo apt install -y git python3-dev python3-pip build-essential wget python3-venv python3-wheel libxslt-dev \
+libzip-dev libldap2-dev libsasl2-dev python3-setuptools node-less libjpeg-dev gdebi libssl-dev
 
 #--------------------------------------------------
 # Install Python pip Dependencies
 #--------------------------------------------------
 echo -e "\n=================== Installing Python pip Dependencies ============================"
-sudo apt install -y libpq-dev python-dev libxml2-dev libxslt1-dev libldap2-dev libsasl2-dev libffi-dev
+sudo apt install -y libpq-dev libxml2-dev libxslt1-dev libffi-dev
 
 echo -e "\n================== Install Wkhtmltopdf ============================================="
 sudo apt install -y xfonts-75dpi xfonts-encodings xfonts-utils xfonts-base
 
-sudo apt install -y libfreetype6-dev libzip-dev libldap2-dev zlib1g-dev libblas-dev libatlas-base-dev libtiff5-dev libjpeg8-dev \
-libopenjp2-7-dev liblcms2-dev liblcms2-utils libwebp-dev libharfbuzz-dev libfribidi-dev libxcb1-dev libssl-dev
+sudo apt install -y libfreetype6-dev zlib1g-dev libblas-dev libatlas-base-dev libtiff5-dev libjpeg8-dev \
+libopenjp2-7-dev liblcms2-dev liblcms2-utils libwebp-dev libharfbuzz-dev libfribidi-dev libxcb1-dev
 
 sudo add-apt-repository ppa:linuxuprising/libpng12
 sudo apt update
@@ -244,8 +244,7 @@ cat <<EOF > /lib/systemd/system/$OE_USER.service
 
 [Unit]
 Description=Odoo Open Source ERP and CRM
-Requires=postgresql.service
-After=network.target postgresql.service
+After=network.target
 
 [Service]
 Type=simple
@@ -302,31 +301,25 @@ server {
    error_log /var/log/nginx/$OE_USER-error.log;
 
    # add ssl specific settings
-   keepalive_timeout    90;
+   keepalive_timeout 90;
 
    # increase proxy buffer to handle some Odoo web requests
    proxy_buffers 16 64k;
    proxy_buffer_size 128k;
 
-   proxy_read_timeout 900s;
-   proxy_connect_timeout 900s;
-   proxy_send_timeout 900s;
+   proxy_read_timeout 720s;
+   proxy_connect_timeout 720s;
+   proxy_send_timeout 720s;
   
    # force timeouts if the backend dies
    proxy_next_upstream error timeout invalid_header http_500 http_502 http_503 http_504;
 
-   # set headers
+   # Add Headers for odoo proxy mode
    proxy_set_header Host \$host;
-   proxy_set_header X-Real-IP \$remote_addr;
-   proxy_set_header X-Forward-For \$proxy_add_x_forwarded_for;
-   proxy_set_header Host \$http_x_forwarded_host;
-
-   # Let the Odoo web service know that we’re using HTTPS, otherwise
-   # it will generate URL using http:// and not https://
-   proxy_set_header X-Forwarded-Proto http;
-   proxy_set_header X-Forwarded-Host \$host;
    proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
- 
+   proxy_set_header X-Forwarded-Proto \$scheme;
+   proxy_set_header X-Real-IP \$remote_addr;
+
    # by default, do not forward anything
    proxy_redirect off;
    proxy_buffering off;
