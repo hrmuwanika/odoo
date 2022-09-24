@@ -38,17 +38,17 @@ OE_SUPERADMIN="admin"
 GENERATE_RANDOM_PASSWORD="True"
 OE_CONFIG="${OE_USER}-server"
 # Set the website name
-WEBSITE_NAME="mh.rw"
+WEBSITE_NAME="example.com"
 # Set the default Odoo longpolling port (you still have to use -c /etc/odoo-server.conf for example to use this.)
 LONGPOLLING_PORT="8072"
 # Set to "True" to install certbot and have ssl enabled, "False" to use http
 ENABLE_SSL="True"
 # Provide Email to register ssl certificate
-ADMIN_EMAIL="hrmuwanika@gmail.com"
+ADMIN_EMAIL="odoo@example.com"
 
 ###
 #----------------------------------------------------
-# Uncomment if you what to disable password authentication
+# Uncomment if you want to disable password authentication
 #----------------------------------------------------
 # sudo sed -i 's/#ChallengeResponseAuthentication yes/ChallengeResponseAuthentication no/' /etc/ssh/sshd_config
 # sudo sed -i 's/UsePAM yes/UsePAM no/' /etc/ssh/sshd_config 
@@ -132,6 +132,7 @@ sudo npm install -g rtlcss node-gyp
 # Install Wkhtmltopdf if needed
 #--------------------------------------------------
 if [ $INSTALL_WKHTMLTOPDF = "True" ]; then
+echo -e "\n---- Install wkhtmltopdf and place shortcuts on correct place for ODOO 15 ----"
 ###  WKHTMLTOPDF download links
 ## === Ubuntu Focal x64 === (for other distributions please replace this link,
 ## in order to have correct version of wkhtmltopdf installed, for a danger note refer to
@@ -220,7 +221,6 @@ fi
 # echo -e "\n======== Adding Enterprise or custom modules ============="
 if [ $IS_ENTERPRISE = "True" ]; then
   #### upgrade odoo community to enterprise edition ####
-  # Odoo 13: https://www.soladrive.com/downloads/enterprise-13.0.tar.gz
   # Odoo 14: https://www.soladrive.com/downloads/enterprise-14.0.tar.gz
   # Odoo 15: https://www.soladrive.com/downloads/enterprise-15.0.tar.gz
   
