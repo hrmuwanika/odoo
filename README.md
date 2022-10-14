@@ -18,7 +18,7 @@ There are a few things you can configure, this is the most used list:<br/>
 ```GENERATE_RANDOM_PASSWORD``` if this is set to ```True``` the script will generate a random password, if set to ```False```we'll set the password that is configured in ```OE_SUPERADMIN```. By default the value is ```True``` and the script will generate a random and secure password.<br/>
 ```OE_PORT``` is the port where Odoo should run on, for example 8069.<br/>
 ```OE_VERSION``` is the Odoo version to install, for example ```14.0``` for Odoo V14.<br/>
-```IS_ENTERPRISE``` will install the Enterprise version on top of ```14.0``` if you set it to ```True```, set it to ```False``` if you want the community version of Odoo 14.<br/>
+```IS_ENTERPRISE``` will install the Enterprise version on top of ```16.0``` if you set it to ```True```, set it to ```False``` if you want the community version of Odoo 16.<br/>
 ```OE_SUPERADMIN``` is the master password for this Odoo installation.<br/>
 ```INSTALL_NGINX``` is set to ```True``` by default. Set this to ```False``` if you don't want to install Nginx.<br/>
 ```WEBSITE_NAME``` Set the website name here for nginx configuration<br/>
