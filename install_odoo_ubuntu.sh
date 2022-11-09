@@ -65,8 +65,7 @@ sudo apt install -y software-properties-common
 sudo add-apt-repository universe
 
 # libpng12-0 dependency for wkhtmltopdf
-sudo wget http://ppa.launchpad.net/linuxuprising/libpng12/ubuntu/pool/main/libp/libpng/libpng12-dev_1.2.54-1ubuntu1.1+1~ppa0~focal_amd64.deb
-sudo dpkg -i libpng12-dev_1.2.54-1ubuntu1.1+1~ppa0~focal_amd64.deb
+sudo add-apt-repository "deb http://mirrors.kernel.org/ubuntu/ focal main"
 
 sudo apt update 
 sudo apt upgrade -y
@@ -96,7 +95,7 @@ sudo su - postgres -c "createuser -s $OE_USER" 2> /dev/null || true
 # Install Python Dependencies
 #--------------------------------------------------
 echo -e "\n=================== Installing Python Dependencies ============================"
-sudo apt install -y git python3-dev python3-pip build-essential wget python3-venv python3-wheel libxslt-dev \
+sudo apt install -y git python3-dev python3-pip build-essential wget python3-venv python3-wheel python3-cffi libxslt-dev \
 libzip-dev libldap2-dev libsasl2-dev python3-setuptools node-less libjpeg-dev gdebi libssl-dev
 
 #--------------------------------------------------
