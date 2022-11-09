@@ -1,10 +1,10 @@
 #!/bin/bash
 
 ################################################################################
-# Script for installing Odoo on Ubuntu 20.04 LTS (could be used for other version too)
+# Script for installing Odoo on Ubuntu 22.04 LTS (could be used for other version too)
 # Author: Henry Robert Muwanika
 #-------------------------------------------------------------------------------
-# This script will install Odoo on your Ubuntu 20.04 server. It can install multiple Odoo instances
+# This script will install Odoo on your Ubuntu 22.04 server. It can install multiple Odoo instances
 # in one Ubuntu because of the different xmlrpc_ports
 #-------------------------------------------------------------------------------
 # crontab -e
@@ -25,7 +25,7 @@ OE_HOME_EXT="/opt/$OE_USER/${OE_USER}-server"
 INSTALL_WKHTMLTOPDF="True"
 # Set the default Odoo port (you still have to use -c /etc/odoo-server.conf for example to use this.)
 OE_PORT="8069"
-# Choose the Odoo version which you want to install. For example: 14.0, 13.0 or 12.0. When using 'master' the master version will be installed.
+# Choose the Odoo version which you want to install. For example: 16.0, 15.0 or 14.0. When using 'master' the master version will be installed.
 # IMPORTANT! This script contains extra libraries that are specifically needed for Odoo 14.0
 OE_VERSION="16.0"
 # Set this to True if you want to install the Odoo enterprise version!
@@ -65,7 +65,8 @@ sudo apt install -y software-properties-common
 sudo add-apt-repository universe
 
 # libpng12-0 dependency for wkhtmltopdf
-sudo add-apt-repository "deb http://mirrors.kernel.org/ubuntu/ focal main"
+sudo wget http://ppa.launchpad.net/linuxuprising/libpng12/ubuntu/pool/main/libp/libpng/libpng12-dev_1.2.54-1ubuntu1.1+1~ppa0~focal_amd64.deb
+sudo dpkg -i libpng12-dev_1.2.54-1ubuntu1.1+1~ppa0~focal_amd64.deb
 
 sudo apt update 
 sudo apt upgrade -y
@@ -105,7 +106,7 @@ echo -e "\n=================== Installing Python pip Dependencies ==============
 sudo apt install -y libpq-dev libxml2-dev libxslt1-dev libffi-dev
 
 echo -e "\n================== Install Wkhtmltopdf ============================================="
-sudo apt install -y xfonts-75dpi xfonts-encodings xfonts-utils xfonts-base
+sudo apt install -y xfonts-75dpi xfonts-encodings xfonts-utils xfonts-base fontconfig
 
 sudo apt install -y libfreetype6-dev zlib1g-dev libblas-dev libatlas-base-dev libtiff5-dev libjpeg8-dev \
 libopenjp2-7-dev liblcms2-dev liblcms2-utils libwebp-dev libharfbuzz-dev libfribidi-dev libxcb1-dev
@@ -139,8 +140,8 @@ echo -e "\n---- Install wkhtmltopdf and place shortcuts on correct place for ODO
 ## https://github.com/odoo/odoo/wiki/Wkhtmltopdf ):
 ## https://www.odoo.com/documentation/15.0/setup/install.html#debian-ubuntu
 
-  sudo wget https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6-1/wkhtmltox_0.12.6-1.focal_amd64.deb
-  sudo apt install ./wkhtmltox_0.12.6-1.focal_amd64.deb
+  sudo wget https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6.1-2/wkhtmltox_0.12.6.1-2.jammy_amd64.deb
+  sudo dpkg -i wkhtmltox_0.12.6.1-2.jammy_amd64.deb 
   sudo ln -s /usr/local/bin/wkhtmltopdf /usr/bin
   sudo ln -s /usr/local/bin/wkhtmltoimage /usr/bin
    else
