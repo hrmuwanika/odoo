@@ -99,8 +99,7 @@ sudo apt install -y git python3-dev python3-pip build-essential wget python3-ven
 libzip-dev libldap2-dev libsasl2-dev python3-setuptools node-less libjpeg-dev gdebi
 
 # install libssl
-sudo wget http://security.ubuntu.com/ubuntu/pool/main/o/openssl/libssl1.1_1.1.1f-1ubuntu2_amd64.deb
-sudo dpkg -i libssl1.1_1.1.1f-1ubuntu2_amd64.deb
+sudo apt install libssl1.1
 
 #--------------------------------------------------
 # Install Python pip Dependencies
@@ -131,7 +130,6 @@ sudo npm install -g --upgrade npm
 sudo ln -s /usr/bin/nodejs /usr/bin/node
 sudo npm install -g less-plugin-clean-css
 sudo npm install -g rtlcss node-gyp
-sudo apt install libssl1.1
 
 #--------------------------------------------------
 # Install Wkhtmltopdf if needed
@@ -144,8 +142,8 @@ echo -e "\n---- Install wkhtmltopdf and place shortcuts on correct place for ODO
 ## https://github.com/odoo/odoo/wiki/Wkhtmltopdf ):
 ## https://www.odoo.com/documentation/15.0/setup/install.html#debian-ubuntu
 
-  sudo wget https://github.com/wkhtmltox/packaging/releases/download/0.12.6-1/wkhtmltox_0.12.6-1.bionic_amd64.deb
-  sudo dpkg -i wkhtmltox_0.12.6-1.bionic_amd64.deb
+  sudo wget https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6.1-2/wkhtmltox_0.12.6.1-2.jammy_amd64.deb 
+  sudo dpkg -i wkhtmltox_0.12.6.1-2.jammy_amd64.deb
   sudo ln -s /usr/local/bin/wkhtmltopdf /usr/bin
   sudo ln -s /usr/local/bin/wkhtmltoimage /usr/bin
    else
