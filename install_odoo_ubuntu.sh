@@ -81,9 +81,6 @@ timedatectl
 #--------------------------------------------------
 # Install PostgreSQL Server
 #--------------------------------------------------
-echo -e "\n================ Install PostgreSQL Server =========================="
-echo "deb http://apt.postgresql.org/pub/repos/apt/ $(lsb_release -cs)-pgdg main" | sudo tee  /etc/apt/sources.list.d/pgdg.list
-wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
 sudo apt update
 sudo apt install -y postgresql
 sudo systemctl start postgresql && sudo systemctl enable postgresql
@@ -124,9 +121,8 @@ sudo pip3 install setuptools wheel
 sudo pip3 install -r requirements.txt
 
 echo -e "\n=========== Installing nodeJS NPM and rtlcss for LTR support =================="
-sudo curl -sL https://deb.nodesource.com/setup_18.x -o nodesource_setup.sh
-sudo apt remove nodejs npm
-sudo bash nodesource_setup.sh
+sudo curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
+sudo apt-get update
 sudo apt install -y nodejs npm -y
 sudo npm install -g --upgrade npm
 sudo ln -s /usr/bin/nodejs /usr/bin/node
