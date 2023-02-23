@@ -131,6 +131,7 @@ sudo npm install -g --upgrade npm
 sudo ln -s /usr/bin/nodejs /usr/bin/node
 sudo npm install -g less-plugin-clean-css
 sudo npm install -g rtlcss node-gyp
+sudo apt install libssl1.1
 
 #--------------------------------------------------
 # Install Wkhtmltopdf if needed
@@ -138,7 +139,7 @@ sudo npm install -g rtlcss node-gyp
 if [ $INSTALL_WKHTMLTOPDF = "True" ]; then
 echo -e "\n---- Install wkhtmltopdf and place shortcuts on correct place for ODOO 15 ----"
 ###  WKHTMLTOPDF download links
-## === Ubuntu Focal x64 === (for other distributions please replace this link,
+## === Ubuntu Jammy x64 === (for other distributions please replace this link,
 ## in order to have correct version of wkhtmltopdf installed, for a danger note refer to
 ## https://github.com/odoo/odoo/wiki/Wkhtmltopdf ):
 ## https://www.odoo.com/documentation/15.0/setup/install.html#debian-ubuntu
