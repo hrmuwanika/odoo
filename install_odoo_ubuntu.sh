@@ -50,22 +50,22 @@ ADMIN_EMAIL="odoo@example.com"
 #----------------------------------------------------
 # Uncomment if you want to disable password authentication
 #----------------------------------------------------
-# sudo sed -i 's/#ChallengeResponseAuthentication yes/ChallengeResponseAuthentication no/' /etc/ssh/sshd_config
-# sudo sed -i 's/UsePAM yes/UsePAM no/' /etc/ssh/sshd_config 
-# sudo sed -i 's/#PasswordAuthentication yes/PasswordAuthentication no/' /etc/ssh/sshd_config
-# sudo systemctl restart sshd
+sudo sed -i 's/#ChallengeResponseAuthentication yes/ChallengeResponseAuthentication no/' /etc/ssh/sshd_config
+sudo sed -i 's/UsePAM yes/UsePAM no/' /etc/ssh/sshd_config 
+sudo sed -i 's/#PasswordAuthentication yes/PasswordAuthentication no/' /etc/ssh/sshd_config
+sudo systemctl restart sshd
 
 ##
 #--------------------------------------------------
 # Update Server
 #--------------------------------------------------
 echo -e "\n============== Update Server ======================="
-# universe package is for Ubuntu 20.x
+# universe package is for Ubuntu 22.x
 sudo apt install -y software-properties-common
 sudo add-apt-repository universe
 
 # libpng12-0 dependency for wkhtmltopdf
-sudo add-apt-repository "deb http://mirrors.kernel.org/ubuntu/ focal main"
+sudo add-apt-repository "deb http://mirrors.kernel.org/ubuntu/ jammy main"
 
 sudo apt update 
 sudo apt upgrade -y
@@ -143,8 +143,8 @@ echo -e "\n---- Install wkhtmltopdf and place shortcuts on correct place for ODO
 ## https://github.com/odoo/odoo/wiki/Wkhtmltopdf ):
 ## https://www.odoo.com/documentation/15.0/setup/install.html#debian-ubuntu
 
-  sudo wget https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6-1/wkhtmltox_0.12.6-1.focal_amd64.deb
-  sudo dpkg -i wkhtmltox_0.12.6-1.focal_amd64.deb 
+  sudo wget https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6-2/wkhtmltopdf_0.12.6-2_amd64.deb
+  sudo dpkg -i wkhtmltopdf_0.12.6-2_amd64.deb
   sudo ln -s /usr/local/bin/wkhtmltopdf /usr/bin
   sudo ln -s /usr/local/bin/wkhtmltoimage /usr/bin
    else
