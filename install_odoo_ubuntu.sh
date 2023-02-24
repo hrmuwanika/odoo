@@ -60,13 +60,6 @@ sudo systemctl restart sshd
 # Update Server
 #--------------------------------------------------
 echo -e "\n============== Update Server ======================="
-# universe package is for Ubuntu 22.x
-sudo apt install -y software-properties-common
-sudo add-apt-repository universe
-
-# libpng12-0 dependency for wkhtmltopdf
-sudo add-apt-repository "deb http://mirrors.kernel.org/ubuntu/ jammy main"
-
 sudo apt update 
 sudo apt upgrade -y
 sudo apt autoremove -y
@@ -81,7 +74,6 @@ timedatectl
 #--------------------------------------------------
 # Install PostgreSQL Server
 #--------------------------------------------------
-sudo apt update
 sudo apt install -y postgresql
 sudo systemctl start postgresql && sudo systemctl enable postgresql
 
@@ -92,11 +84,11 @@ sudo su - postgres -c "createuser -s $OE_USER" 2> /dev/null || true
 # Install Python Dependencies
 #--------------------------------------------------
 echo -e "\n=================== Installing Python Dependencies ============================"
-sudo apt install -y git python3-dev python3-pip build-essential wget python3-venv python3-wheel python3-cffi libxslt-dev libxslt1-dev \
+sudo apt install -y git python3-dev python3-pip build-essential wget python3-venv python3-wheel python3-cffi libxslt-dev  \
 libzip-dev libldap2-dev libsasl2-dev python3-setuptools node-less libjpeg-dev gdebi
 
 # install libssl
-sudo apt install libssl1.1
+# sudo apt install libssl1.1
 
 #--------------------------------------------------
 # Install Python pip Dependencies
@@ -107,13 +99,6 @@ sudo apt install -y libpq-dev libxml2-dev libxslt1-dev libffi-dev
 echo -e "\n================== Install Wkhtmltopdf ============================================="
 sudo apt install -y xfonts-75dpi xfonts-encodings xfonts-utils xfonts-base fontconfig
 
-sudo apt install -y libfreetype6-dev zlib1g-dev libblas-dev libatlas-base-dev libtiff5-dev libjpeg8-dev \
-libopenjp2-7-dev liblcms2-dev liblcms2-utils libwebp-dev libharfbuzz-dev libfribidi-dev libxcb1-dev
-
-sudo add-apt-repository ppa:linuxuprising/libpng12
-sudo apt update
-sudo apt install -y libpng12-0
-
 echo -e "\n================== Install python packages/requirements ============================"
 wget https://raw.githubusercontent.com/odoo/odoo/${OE_VERSION}/requirements.txt
 sudo pip3 install --upgrade pip
@@ -121,8 +106,6 @@ sudo pip3 install setuptools wheel
 sudo pip3 install -r requirements.txt
 
 echo -e "\n=========== Installing nodeJS NPM and rtlcss for LTR support =================="
-sudo curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
-sudo apt-get update
 sudo apt install -y nodejs npm -y
 sudo npm install -g --upgrade npm
 sudo ln -s /usr/bin/nodejs /usr/bin/node
