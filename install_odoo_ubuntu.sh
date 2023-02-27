@@ -48,7 +48,7 @@ ADMIN_EMAIL="odoo@example.com"
 
 ###
 #----------------------------------------------------
-# Uncomment if you want to disable password authentication
+# Disable password authentication
 #----------------------------------------------------
 sudo sed -i 's/#ChallengeResponseAuthentication yes/ChallengeResponseAuthentication no/' /etc/ssh/sshd_config
 sudo sed -i 's/UsePAM yes/UsePAM no/' /etc/ssh/sshd_config 
@@ -88,7 +88,7 @@ sudo apt install -y git python3-dev python3-pip build-essential wget python3-ven
 libzip-dev libldap2-dev libsasl2-dev python3-setuptools node-less libjpeg-dev gdebi
 
 # install libssl
-# sudo apt install libssl1.1
+# sudo apt -y install libssl1.1
 
 #--------------------------------------------------
 # Install Python pip Dependencies
@@ -116,12 +116,12 @@ sudo npm install -g rtlcss node-gyp
 # Install Wkhtmltopdf if needed
 #--------------------------------------------------
 if [ $INSTALL_WKHTMLTOPDF = "True" ]; then
-echo -e "\n---- Install wkhtmltopdf and place shortcuts on correct place for ODOO 15 ----"
+echo -e "\n---- Install wkhtmltopdf and place shortcuts on correct place for ODOO 16 ----"
 ###  WKHTMLTOPDF download links
 ## === Ubuntu Jammy x64 === (for other distributions please replace this link,
 ## in order to have correct version of wkhtmltopdf installed, for a danger note refer to
 ## https://github.com/odoo/odoo/wiki/Wkhtmltopdf ):
-## https://www.odoo.com/documentation/15.0/setup/install.html#debian-ubuntu
+## https://www.odoo.com/documentation/16.0/setup/install.html#debian-ubuntu
 
   sudo wget https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6.1-2/wkhtmltox_0.12.6.1-2.jammy_amd64.deb 
   sudo dpkg -i wkhtmltox_0.12.6.1-2.jammy_amd64.deb
