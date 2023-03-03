@@ -264,21 +264,21 @@ if [ $INSTALL_NGINX = "True" ]; then
 cat <<EOF > /etc/nginx/sites-available/$OE_USER
 
 # odoo server
-upstream $OE_USER {
+ upstream $OE_USER {
  server 127.0.0.1:$OE_PORT;
 }
 
-upstream ${OE_USER}chat {
+ upstream ${OE_USER}chat {
  server 127.0.0.1:$LONGPOLLING_PORT;
 }
 
 server {
-    listen 80;
-    server_name $WEBSITE_NAME;
+   listen 80;
+   server_name $WEBSITE_NAME;
 
    # Specifies the maximum accepted body size of a client request,
    # as indicated by the request header Content-Length.
-   client_max_body_size 0;
+   client_max_body_size 500M;
 
    # log
    access_log /var/log/nginx/$OE_USER-access.log;
@@ -323,8 +323,15 @@ server {
   }
 
   # common gzip
-    gzip_types text/css text/scss text/plain text/xml application/xml application/json application/javascript;
-    gzip on;
+  gzip_types text/css text/less text/plain text/xml application/xml application/json application/javascript;
+  gzip on;
+
+
+  client_body_in_file_only clean;
+  client_body_buffer_size 32K;
+  sendfile on;
+  send_timeout 600s;
+  keepalive_timeout 300;
 }
  
 EOF
