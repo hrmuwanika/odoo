@@ -206,13 +206,12 @@ fi
 if [ $IS_ENTERPRISE = "True" ]; then
   #### upgrade odoo community to enterprise edition ####
   # Odoo 15: https://www.soladrive.com/downloads/enterprise-15.0.tar.gz
-  # Odoo 16: https://www.soladrive.com/downloads/enterprise-16.0.tar.gz
   
   echo -e "\n======== Adding some enterprise modules ============="
-  wget https://www.soladrive.com/downloads/enterprise-16.0.tar.gz
-  tar -zxvf enterprise-16.0.tar.gz
-  cp -rf odoo-16.0*/odoo/addons/* ${OE_HOME}/enterprise/addons
-  rm enterprise-16.0.tar.gz
+  wget https://www.soladrive.com/downloads/enterprise-15.0.tar.gz
+  tar -zxvf enterprise-15.0.tar.gz
+  cp -rf odoo-15.0*/odoo/addons/* ${OE_HOME}/enterprise/addons
+  rm enterprise-15.0.tar.gz
   chown -R $OE_USER:$OE_USER ${OE_HOME}/
 fi
 
