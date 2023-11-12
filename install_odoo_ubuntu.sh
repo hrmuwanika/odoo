@@ -84,11 +84,12 @@ sudo su - postgres -c "createuser -s $OE_USER" 2> /dev/null || true
 # Install Python Dependencies
 #--------------------------------------------------
 echo -e "\n=================== Installing Python Dependencies ============================"
-sudo apt install -y git python3-dev python3-pip build-essential wget python3-venv python3-wheel python3-cffi libxslt-dev  \
-libzip-dev libldap2-dev libsasl2-dev python3-setuptools node-less libjpeg-dev gdebi
+sudo apt install -y git python3 python3-dev python3-pip build-essential wget python3-venv python3-wheel python3-cffi libxslt-dev  \
+libzip-dev libldap2-dev libsasl2-dev python3-setuptools node-less libjpeg-dev gdebi libatlas-base-dev libblas-dev liblcms2-dev \
+zlib1g-dev libjpeg8-dev
 
 # install libssl
-# sudo apt -y install libssl1.1
+sudo apt -y install libssl-dev
 
 #--------------------------------------------------
 # Install Python pip Dependencies
@@ -109,7 +110,7 @@ echo -e "\n=========== Installing nodeJS NPM and rtlcss for LTR support ========
 sudo apt install -y nodejs npm -y
 sudo npm install -g --upgrade npm
 sudo ln -s /usr/bin/nodejs /usr/bin/node
-sudo npm install -g less-plugin-clean-css
+sudo npm install -g less less-plugin-clean-css
 sudo npm install -g rtlcss node-gyp
 
 #--------------------------------------------------
@@ -246,7 +247,7 @@ sudo chown root: /lib/systemd/system/$OE_USER.service
 
 echo -e "\n======== Odoo startup File ============="
 sudo systemctl daemon-reload
-sudo systemctl enable $OE_USER.service
+sudo systemctl enable --now $OE_USER.service
 sudo systemctl start $OE_USER.service
 
 sudo systemctl restart $OE_USER.service
