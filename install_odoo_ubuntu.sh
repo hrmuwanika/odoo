@@ -101,10 +101,9 @@ echo -e "\n================== Install Wkhtmltopdf ==============================
 sudo apt install -y xfonts-75dpi xfonts-encodings xfonts-utils xfonts-base fontconfig
 
 echo -e "\n================== Install python packages/requirements ============================"
-wget https://raw.githubusercontent.com/odoo/odoo/${OE_VERSION}/requirements.txt
 sudo pip3 install --upgrade pip
 sudo pip3 install setuptools wheel
-sudo pip3 install -r requirements.txt
+
 
 echo -e "\n=========== Installing nodeJS NPM and rtlcss for LTR support =================="
 sudo curl -sL https://deb.nodesource.com/setup_20.x | sudo -E bash -
@@ -148,7 +147,7 @@ sudo chown -R $OE_USER:$OE_USER /var/log/$OE_USER
 #--------------------------------------------------
 echo -e "\n========== Installing ODOO Server ==============="
 sudo git clone --depth 1 --branch $OE_VERSION https://www.github.com/odoo/odoo $OE_HOME_EXT/
-
+sudo pip3 install -r /$OE_HOME_EXT/requirements.txt
 if [ $IS_ENTERPRISE = "True" ]; then
     # Odoo Enterprise install!
     sudo pip3 install psycopg2-binary pdfminer.six
